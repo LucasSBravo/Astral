@@ -62,8 +62,13 @@ public class Principal {
     
         // Carregar imagem para o botão Mago
         ImageIcon iconeMago = new ImageIcon("src/com/main/Resources/Imagens/mago.png"); // Caminho da imagem
-        Image imagemAjustada = iconeMago.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        iconeMago = new ImageIcon(imagemAjustada);
+        Image imagemAjustadaMago = iconeMago.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        iconeMago = new ImageIcon(imagemAjustadaMago);
+    
+        // Carregar imagem para o botão Bárbaro
+        ImageIcon iconeBarbaro = new ImageIcon("src/com/main/Resources/Imagens/cav.png"); // Caminho da imagem
+        Image imagemAjustadaBarbaro = iconeBarbaro.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        iconeBarbaro = new ImageIcon(imagemAjustadaBarbaro);
     
         // Configurar botões
         for (int i = 0; i < 3; i++) {
@@ -73,8 +78,9 @@ public class Principal {
             botoes[i].setForeground(UIManager.getColor("Button.foreground")); // Restaurando cor do texto
         }
     
-        // Adicionar imagem ao botão Mago
-        botoes[0].setIcon(iconeMago);
+        // Adicionar imagens aos botões
+        botoes[0].setIcon(iconeMago);    // Ícone para o botão Mago
+        botoes[1].setIcon(iconeBarbaro); // Ícone para o botão Bárbaro
     
         // Ação do botão "Sair"
         botoes[2].addActionListener(e -> System.exit(0));
@@ -83,18 +89,25 @@ public class Principal {
         for (int i = 0; i < 2; i++) {
             final int escolhaFinal = i;
             botoes[i].addActionListener(e -> {
+                // Remover ícone de todos os botões antes de prosseguir
+                for (JButton botao : botoes) {
+                    botao.setIcon(null);
+                }
+    
+                // Criar personagem correspondente
                 Personagem personagem = switch (escolhaFinal) {
                     case 0 -> new Mago(botoes);
                     case 1 -> new Barbaro(botoes);
                     default -> null;
                 };
+    
                 if (personagem != null) {
                     personagem.apresentarHistoria(areaTexto);
                     personagem.iniciarAventura(areaTexto, botoes);
                 }
             });
         }
-    }    
+    }   
 }
 
 // Classe para exibir imagem de fundo
