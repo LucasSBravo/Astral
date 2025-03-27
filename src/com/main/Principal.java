@@ -7,48 +7,57 @@ import java.awt.event.ActionListener;
 public class Principal {
     public static void main(String[] args) {
         JFrame janela = new JFrame("Jogo de Aventura");
-        janela.setSize(1580, 780);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        janela.setUndecorated(true); // Remove bordas e barra de título
+    
+        // Obtém a resolução da tela e ajusta a janela
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        janela.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+        gd.setFullScreenWindow(janela); // Ativa modo tela cheia
+    
         // Painel com imagem de fundo
         FundoPanel painelFundo = new FundoPanel("src/com/main/Resources/Imagens/darkaether.png");
-        painelFundo.setLayout(new BorderLayout());  // Usando BorderLayout para organizar os componentes
-
+        painelFundo.setLayout(new BorderLayout());
+    
         // Criando e configurando a área de texto
         JTextArea areaTexto = new JTextArea();
         areaTexto.setEditable(false);
-        areaTexto.setOpaque(false);  // Torna o fundo da área de texto transparente
-        areaTexto.setForeground(Color.WHITE);  // Ajusta a cor do texto para branco (para contraste com o fundo)
+        areaTexto.setOpaque(false);
+        areaTexto.setForeground(Color.WHITE);
+        areaTexto.setFont(new Font("Arial", Font.BOLD, 18)); // Ajusta o tamanho da fonte para melhor visibilidade
+        areaTexto.setWrapStyleWord(true);
+        areaTexto.setLineWrap(true);
+        
         JScrollPane scrollPane = new JScrollPane(areaTexto);
-        scrollPane.setOpaque(false);  // Torna o fundo da JScrollPane transparente
-        scrollPane.getViewport().setOpaque(false);  // Torna o fundo do viewport transparente
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
         painelFundo.add(scrollPane, BorderLayout.CENTER);
-
-        // Criando painel para os botões e configurando-o
+    
+        // Criando painel para os botões
         JPanel painelBotoes = new JPanel();
-        painelBotoes.setLayout(new GridLayout(1, 3));  // Organiza os botões em linha
-        painelBotoes.setOpaque(false);  // Torna o fundo do painel de botões transparente (não será afetado pela imagem)
-
+        painelBotoes.setLayout(new GridLayout(1, 3));
+        painelBotoes.setOpaque(false);
+    
         JButton[] botoes = new JButton[3];
-
         for (int i = 0; i < 3; i++) {
             botoes[i] = new JButton();
             painelBotoes.add(botoes[i]);
         }
-
-        painelFundo.add(painelBotoes, BorderLayout.SOUTH);  // Adiciona os botões no painel de fundo
-        janela.setContentPane(painelFundo);  // Adiciona o painel de fundo à janela
+    
+        painelFundo.add(painelBotoes, BorderLayout.SOUTH);
+        janela.setContentPane(painelFundo);
         janela.setVisible(true);
-
+    
         menu(areaTexto, botoes);
     }
+    
 
     public static void menu(JTextArea areaTexto, JButton[] botoes) {
         areaTexto.setText("\n--------------------------------------------------------\n");
         areaTexto.append(" Escolha seu personagem:\n");
-        areaTexto.append(" 1) Mago\n");
-        areaTexto.append(" 2) Bárbaro\n");
-        areaTexto.append(" 0) Sair\n");
+        areaTexto.append(" Mago\n");
+        areaTexto.append(" Bárbaro\n");
+        areaTexto.append(" Sair\n");
         areaTexto.append("--------------------------------------------------------\n");
     
         String[] opcoes = {"Mago", "Bárbaro", "Sair"};
