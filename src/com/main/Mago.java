@@ -14,14 +14,18 @@ public class Mago extends Personagem {
         this.botoes = botoes;
 
         adicionarOpcao("Partir imediatamente para a missão", area -> {
-            area.append("\nVocê enfrenta perigos e chega a uma encruzilhada...\n");
+        	Principal.exibirDialogo("Você enfrenta perigos e chega a uma encruzilhada...");
             adicionarOpcoesEncruzilhada(area, botoes);
         });
         
         
         adicionarOpcao("Consultar o Arquimago", area -> {
-            area.append("\nO Arquimago lhe conta sobre um perigo oculto...\n");
-            adicionarOpcoesArquimago(area, botoes);
+            Principal.exibirDialogo("O Arquimago lhe conta sobre um perigo oculto...");
+            
+            new javax.swing.Timer(100, e -> {
+                ((javax.swing.Timer)e.getSource()).stop();
+                adicionarOpcoesArquimago(area, botoes);
+            }).start();
         });
     }
     
@@ -30,12 +34,12 @@ public class Mago extends Personagem {
         limparOpcoes(); 
 
         adicionarOpcao("Explorar a floresta sombria", areaTexto -> {
-            areaTexto.append("\nVocê encontra criaturas sombrias e precisa lutar...\n");
+            Principal.exibirDialogo("Você encontra criaturas sombrias e precisa lutar...");
             finalizarCiclo(areaTexto, botoes);
         });
 
         adicionarOpcao("Seguir pelo caminho das montanhas", areaTexto -> {
-            areaTexto.append("\nO caminho é perigoso, mas você avista o artefato ao longe...\n");
+            Principal.exibirDialogo("O caminho é perigoso, mas você avista o artefato ao longe...");
             finalizarCiclo(areaTexto, botoes);
         });
 
@@ -47,12 +51,12 @@ public class Mago extends Personagem {
         limparOpcoes();
         
         adicionarOpcao("Pedir ajuda ao Arquimago", areaTexto -> {
-            areaTexto.append("\nO Arquimago concorda em ajudá-lo, mas exige algo em troca...\n");
+            Principal.exibirDialogo("O Arquimago concorda em ajudá-lo, mas exige algo em troca...");
             finalizarCiclo(areaTexto, botoes);
         });
 
         adicionarOpcao("Investigar o perigo sozinho", areaTexto -> {
-            areaTexto.append("\nVocê parte em uma missão solitária e perigosa...\n");
+            Principal.exibirDialogo("Você parte em uma missão solitária e perigosa...");
             finalizarCiclo(areaTexto, botoes);
         });
         

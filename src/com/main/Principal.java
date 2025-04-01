@@ -6,6 +6,11 @@ import java.awt.event.ActionListener;
 
 public class Principal {
     public static void main(String[] args) {
+        // Carregar progresso salvo
+        String progressoSalvo = GerenciadorProgresso.carregarProgresso();
+        if (progressoSalvo != null) {
+            System.out.println("Progresso carregado: " + progressoSalvo);
+        }
         JFrame janela = new JFrame("Jogo de Aventura");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true); // Remove bordas e barra de título
@@ -43,16 +48,20 @@ public class Principal {
             botoes[i] = new JButton();
             painelBotoes.add(botoes[i]);
         }
+
+        // Instância da CaixaDialogoRPG
+        dialogoAtual = new CaixaDialogoRPG(janela);
     
         painelFundo.add(painelBotoes, BorderLayout.SOUTH);
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
     
-        menu(areaTexto, botoes);
+        menu(areaTexto, botoes, progressoSalvo);
     }
     
+    
 
-    public static void menu(JTextArea areaTexto, JButton[] botoes) {
+    public static void menu(JTextArea areaTexto, JButton[] botoes, String progressoSalvo) {
         areaTexto.setText("\n--------------------------------------------------------\n");
         areaTexto.append(" Escolha seu personagem:\n");
         areaTexto.append(" Mago\n");
@@ -114,12 +123,37 @@ public class Principal {
                     personagem.apresentarHistoria(areaTexto);
                     personagem.iniciarAventura(areaTexto, botoes);
                 }
+                // Salvar progresso
+                GerenciadorProgresso.salvarProgresso(opcoes[escolhaFinal]);
+
+                // Exibir mensagem na janela de diálogo
+                exibirDialogo("Você escolheu: " + opcoes[escolhaFinal] + ". Progresso salvo!");
             });
         }
-    }   
+            // Configurar botão "Sair"
+        botoes[2].addActionListener(e -> {
+            exibirDialogo("Você escolheu sair do jogo.");
+            System.exit(0);
+        });
+
+        // Exibir progresso salvo, se houver
+        if (progressoSalvo != null) {
+            exibirDialogo("Progresso carregado: " + progressoSalvo);
+        }
+    }
+    
+   
+    public static void exibirDialogo(String mensagem) {
+        if (dialogoAtual == null) {
+            throw new IllegalStateException("Caixa de diálogo não foi inicializada.");
+        }
+        dialogoAtual.adicionarMensagem(mensagem);
+    }
+    
+   
 }
 
-// Classe para exibir imagem de fundo
+	
 class FundoPanel extends JPanel {
     private Image imagemFundo;
 

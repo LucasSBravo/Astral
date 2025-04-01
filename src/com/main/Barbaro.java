@@ -13,12 +13,12 @@ public class Barbaro extends Personagem {
         this.botoes = botoes;
 
         adicionarOpcao("Seguir o rastro dos invasores", area -> {
-            area.append("\nVocê encontra um acampamento inimigo e se prepara para o ataque...\n");
+            Principal.exibirDialogo("Você encontra um acampamento inimigo e se prepara para o ataque...");
             adicionarOpcoesAtaque(area, botoes);
         });
 
         adicionarOpcao("Buscar aliados nas aldeias próximas", area -> {
-            area.append("\nVocê viaja para a aldeia vizinha em busca de ajuda...\n");
+            Principal.exibirDialogo("Você viaja para a aldeia vizinha em busca de ajuda...");
             adicionarOpcoesAldeia(area, botoes);
         });
 
@@ -29,12 +29,12 @@ public class Barbaro extends Personagem {
         limparOpcoes();
         
         adicionarOpcao("Atacar o acampamento diretamente", areaTexto -> {
-            areaTexto.append("\nVocê entra em fúria e ataca com toda a sua força!\n");
+            Principal.exibirDialogo( "Você entra em fúria e ataca com toda a sua força!");
             finalizarCiclo(areaTexto, botoes);
         });
 
         adicionarOpcao("Infiltrar-se sorrateiramente", areaTexto -> {
-            areaTexto.append("\nVocê se move silenciosamente, eliminando os guardas um a um.\n");
+            Principal.exibirDialogo("Você se move silenciosamente, eliminando os guardas um a um.");
             finalizarCiclo(areaTexto, botoes);
         });
         
@@ -46,12 +46,12 @@ public class Barbaro extends Personagem {
         limparOpcoes();
         
         adicionarOpcao("Pedir ajuda ao líder da aldeia", areaTexto -> {
-            areaTexto.append("\nO líder concorda em ajudar, mas exige uma prova de sua força.\n");
+            Principal.exibirDialogo("O líder concorda em ajudar, mas exige uma prova de sua força.");
             finalizarCiclo(areaTexto, botoes);
         });
         
         adicionarOpcao("Buscar uma rede de informações para descobrir o motivo do ataque", areaTexto -> {
-            areaTexto.append("\nVocê entra em uma casa aparentemente abandonada no fim da Aldeia\n");
+            Principal.exibirDialogo( "Você entra em uma casa aparentemente abandonada no fim da Aldeia");
             finalizarCiclo(areaTexto, botoes);
         });
         
