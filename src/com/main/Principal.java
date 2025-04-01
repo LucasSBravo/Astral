@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Principal {
+    private static CaixaDialogoRPG dialogoAtual;  
     public static void main(String[] args) {
         // Carregar progresso salvo
         String progressoSalvo = GerenciadorProgresso.carregarProgresso();
@@ -56,6 +57,7 @@ public class Principal {
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
     
+        GerenciadorBotoes.configurarSistema(botoes[botoes.length - 1], janela);
         menu(areaTexto, botoes, progressoSalvo);
     }
     
@@ -150,6 +152,9 @@ public class Principal {
         dialogoAtual.adicionarMensagem(mensagem);
     }
     
+    public static CaixaDialogoRPG getDialogoAtual() {
+        return dialogoAtual;
+    }
    
 }
 
