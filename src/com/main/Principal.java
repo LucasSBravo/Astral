@@ -5,7 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Principal {
-    private static CaixaDialogoRPG dialogoAtual;  
+    private static CaixaDialogoRPG dialogoAtual; 
+    private static boolean telaCheia = true; // Variável para controlar o modo de execução 
     public static void main(String[] args) {
         // Carregar progresso salvo
         String progressoSalvo = GerenciadorProgresso.carregarProgresso();
@@ -16,10 +17,8 @@ public class Principal {
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true); // Remove bordas e barra de título
     
-        // Obtém a resolução da tela e ajusta a janela
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        janela.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
-        gd.setFullScreenWindow(janela); // Ativa modo tela cheia
+        // Configurar o modo de execução inicial
+        configurarModoExecucao(janela);
     
         // Painel com imagem de fundo
         FundoPanel painelFundo = new FundoPanel("src/com/main/Resources/Imagens/darkaether.png");
@@ -56,12 +55,92 @@ public class Principal {
         painelFundo.add(painelBotoes, BorderLayout.SOUTH);
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
-    
-        GerenciadorBotoes.configurarSistema(botoes[botoes.length - 1], janela);
-        menu(areaTexto, botoes, progressoSalvo);
+
+        // Exibe o lobby ao iniciar
+         exibirLobby(areaTexto, botoes, janela);
     }
     
-    
+    public static void configurarModoExecucao(JFrame janela) {
+        if (telaCheia) {
+            // Configurar para resolução personalizada
+            janela.setSize(1280, 720); // Altere a resolução manualmente aqui
+            janela.setLocationRelativeTo(null); // Centraliza a janela na tela
+        } else {
+            // Configurar para tela cheia
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            janela.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+            gd.setFullScreenWindow(janela);
+        }
+    }
+
+    public static void exibirLobby(JTextArea areaTexto, JButton[] botoes, JFrame janela) {
+        areaTexto.setText("\n--------------------------------------------------------\n");
+        areaTexto.append(" Bem-vindo ao Lobby!\n");
+        areaTexto.append(" Escolha uma das opções abaixo:\n");
+        areaTexto.append(" 1. Jogar\n");
+        areaTexto.append(" 2. Opções\n");
+        areaTexto.append(" 3. Sair\n");
+        areaTexto.append("--------------------------------------------------------\n");
+
+        String[] opcoes = {"Jogar", "Opções", "Sair"};
+
+        // Limpar ActionListeners antigos
+        for (JButton botao : botoes) {
+            for (ActionListener al : botao.getActionListeners()) {
+                botao.removeActionListener(al);
+            }
+        }
+
+        // Configurar botões
+        for (int i = 0; i < 3; i++) {
+            botoes[i].setText(opcoes[i]);
+            botoes[i].setEnabled(true);
+            botoes[i].setBackground(UIManager.getColor("Button.background")); // Restaurando cor padrão de fundo
+            botoes[i].setForeground(UIManager.getColor("Button.foreground")); // Restaurando cor do texto
+        }
+
+        // Ação do botão "Jogar"
+        botoes[0].addActionListener(e -> {
+            areaTexto.setText(""); // Limpa o texto do lobby
+            String progressoSalvo = GerenciadorProgresso.carregarProgresso();
+            menu(areaTexto, botoes, progressoSalvo); // Executa o restante do código
+        });
+
+        // Ação do botão "Opções"
+        botoes[1].addActionListener(e -> {
+            exibirOpcoes(janela);
+        });
+
+        // Ação do botão "Sair"
+        botoes[2].addActionListener(e -> {
+            exibirDialogo("Você escolheu sair do jogo.");
+            System.exit(0);
+        });
+    }
+
+    public static void exibirOpcoes(JFrame janela) {
+        // Exibe um diálogo para escolher o modo de execução
+        String[] modos = {"Resolução Personalizada", "Tela Cheia"};
+        int escolha = JOptionPane.showOptionDialog(
+                janela,
+                "Escolha o modo de execução:",
+                "Opções",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                modos,
+                modos[0]
+        );
+
+        if (escolha == 0) {
+            telaCheia = true;
+        } else if (escolha == 1) {
+            telaCheia = false;
+        }
+
+        // Reconfigura o modo de execução
+        configurarModoExecucao(janela);
+    }
 
     public static void menu(JTextArea areaTexto, JButton[] botoes, String progressoSalvo) {
         areaTexto.setText("\n--------------------------------------------------------\n");
