@@ -6,19 +6,23 @@ import java.awt.event.ActionListener;
 
 public class Principal {
     private static CaixaDialogoRPG dialogoAtual; 
-    private static boolean telaCheia = true; // Variável para controlar o modo de execução 
+    private static boolean telaCheia = false; // Variável para controlar o modo de execução
+    private static JFrame janela; // Janela agora é um atributo global 
+    private static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     public static void main(String[] args) {
         // Carregar progresso salvo
         String progressoSalvo = GerenciadorProgresso.carregarProgresso();
         if (progressoSalvo != null) {
             System.out.println("Progresso carregado: " + progressoSalvo);
         }
-        JFrame janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Jogo de Aventura");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true); // Remove bordas e barra de título
+        janela.setLayout(new BorderLayout()); // Garante que os componentes sejam organizados corretamente
+        janela.setSize(1280, 720); // Define um tamanho inicial correto
+        janela.setLocationRelativeTo(null); // Centraliza na tela
     
-        // Configurar o modo de execução inicial
-        configurarModoExecucao(janela);
+        configurarModoExecucao(); // Aplica as configurações de tela corretamente
     
         // Painel com imagem de fundo
         FundoPanel painelFundo = new FundoPanel("src/com/main/Resources/Imagens/darkaether.png");
@@ -53,24 +57,92 @@ public class Principal {
         dialogoAtual = new CaixaDialogoRPG(janela);
     
         painelFundo.add(painelBotoes, BorderLayout.SOUTH);
+
+        // Adiciona botão de configurações
+        JButton botaoConfig = new JButton("⚙");
+        botaoConfig.setFocusable(false);
+        botaoConfig.setPreferredSize(new Dimension(50, 50));
+        botaoConfig.setFont(new Font("Arial", Font.BOLD, 20));
+        botaoConfig.setOpaque(false);
+        botaoConfig.addActionListener(e -> exibirOpcoes(janela));
+        
+        JPanel painelTopo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        painelTopo.setOpaque(false);
+        painelTopo.add(botaoConfig);
+        painelFundo.add(painelTopo, BorderLayout.NORTH);
+
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
 
         // Exibe o lobby ao iniciar
          exibirLobby(areaTexto, botoes, janela);
+
+         janela.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_F11) {
+                    alternarModoExecucao();
+                } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+                    exibirOpcoes(janela);
+                }
+            }
+        });
+
+        janela.setVisible(true);
     }
     
-    public static void configurarModoExecucao(JFrame janela) {
+    public static void configurarModoExecucao() {
+        if (janela == null) return;
+
+        janela.dispose();
+        
         if (telaCheia) {
-            // Configurar para resolução personalizada
-            janela.setSize(1280, 720); // Altere a resolução manualmente aqui
-            janela.setLocationRelativeTo(null); // Centraliza a janela na tela
-        } else {
-            // Configurar para tela cheia
-            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            janela.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+            janela.setUndecorated(true);
+            janela.setResizable(false);
             gd.setFullScreenWindow(janela);
+        } else {
+            janela.setUndecorated(false);
+            janela.setResizable(true);
+            gd.setFullScreenWindow(null); // Sai do modo tela cheia
+    
+            janela.setSize(1280, 720); // Define a resolução personalizada corretamente
+            janela.setLocationRelativeTo(null); // Centraliza a janela
         }
+        janela.setVisible(true);
+        janela.revalidate(); // Garante que a interface gráfica seja atualizada
+        janela.repaint(); // Força a repintura da tela
+    }
+
+    public static void alternarModoExecucao() {
+        telaCheia = !telaCheia; // Alterna entre os modos
+        configurarModoExecucao();
+    }
+
+    public static void aplicarResolucaoPersonalizada() {
+        telaCheia = false;
+        configurarModoExecucao();
+    }
+
+    public static void exibirOpcoes(JFrame janela) {
+        String[] modos = {"Resolução Personalizada", "Tela Cheia"};
+        int escolha = JOptionPane.showOptionDialog(
+                janela,
+                "Escolha o modo de execução:",
+                "Opções",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                modos,
+                modos[0]
+        );
+        
+        if (escolha == 0) {
+            telaCheia = false;
+        } else if (escolha == 1) {
+            telaCheia = true;
+        }
+        
+        configurarModoExecucao();
     }
 
     public static void exibirLobby(JTextArea areaTexto, JButton[] botoes, JFrame janela) {
@@ -118,7 +190,7 @@ public class Principal {
         });
     }
 
-    public static void exibirOpcoes(JFrame janela) {
+   /* public static void exibirOpcoes(JFrame janela) {
         // Exibe um diálogo para escolher o modo de execução
         String[] modos = {"Resolução Personalizada", "Tela Cheia"};
         int escolha = JOptionPane.showOptionDialog(
@@ -139,8 +211,8 @@ public class Principal {
         }
 
         // Reconfigura o modo de execução
-        configurarModoExecucao(janela);
-    }
+        configurarModoExecucao();
+    }*/
 
     public static void menu(JTextArea areaTexto, JButton[] botoes, String progressoSalvo) {
         areaTexto.setText("\n--------------------------------------------------------\n");
