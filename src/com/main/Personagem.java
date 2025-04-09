@@ -50,12 +50,14 @@ public abstract class Personagem {
         }
     }
 
+    public abstract void retomarProgresso(JTextArea areaTexto, EstadoJogo estado, JButton[] botoes);
+
 
     protected void finalizarCiclo(JTextArea areaTexto, JButton[] botoes) {
         finalizarCiclo(areaTexto, botoes, null);
     }
 
-    protected void finalizarCiclo(JTextArea areaTexto, JButton[] botoes, String progressoSalvo) {
+    protected void finalizarCiclo(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
         areaTexto.append("\nDeseja voltar ao menu inicial?\n");
 
         resetarEventos(botoes);
@@ -65,7 +67,8 @@ public abstract class Personagem {
         botoes[0].setEnabled(true);
         botoes[0].addActionListener(e -> {
             limparOpcoes();
-            Principal.menu(areaTexto, botoes, progressoSalvo);
+            Principal.exibirMenuInicial(areaTexto, botoes, progressoSalvo);
+
         });
     
         // Configura todos os botões (incluindo Sair)
@@ -94,4 +97,8 @@ public abstract class Personagem {
     protected void limparOpcoes(){
         opcoes.clear();
     }
+
+    // Adicione ao final da classe Personagem
+public abstract void continuarAventura(String etapaSalva, JTextArea areaTexto, JButton[] botoes);
+
 }

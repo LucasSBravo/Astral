@@ -1,66 +1,97 @@
 package com.main;
 
-import javax.swing.JButton;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 public class Mago extends Personagem {
-    @SuppressWarnings("unused")
-	private JButton[] botoes;
+    private final JButton[] botoes;
 
     public Mago(JButton[] botoes) {
-        super("Mago", "Torre Arcana de Eldoria",
-                "Os magos da Torre Arcana passam décadas estudando os segredos do universo. Você foi escolhido para recuperar um artefato antigo.");
-
+        super("Mago", "Torre Arcana de Eldoria", "Você foi escolhido para recuperar um artefato mágico perdido.");
         this.botoes = botoes;
-
-        adicionarOpcao("Partir imediatamente para a missão", area -> {
-        	Principal.exibirDialogo("Você enfrenta perigos e chega a uma encruzilhada...");
-            adicionarOpcoesEncruzilhada(area, botoes);
-        });
-        
-        
-        adicionarOpcao("Consultar o Arquimago", area -> {
-            Principal.exibirDialogo("O Arquimago lhe conta sobre um perigo oculto...");
-            
-            new javax.swing.Timer(100, e -> {
-                ((javax.swing.Timer)e.getSource()).stop();
-                adicionarOpcoesArquimago(area, botoes);
-            }).start();
-        });
     }
-    
 
-    private void adicionarOpcoesEncruzilhada(JTextArea area, JButton[] botoes) {
-        limparOpcoes(); 
-
-        adicionarOpcao("Explorar a floresta sombria", areaTexto -> {
-            Principal.exibirDialogo("Você encontra criaturas sombrias e precisa lutar...");
-            finalizarCiclo(areaTexto, botoes);
-        });
-
-        adicionarOpcao("Seguir pelo caminho das montanhas", areaTexto -> {
-            Principal.exibirDialogo("O caminho é perigoso, mas você avista o artefato ao longe...");
-            finalizarCiclo(areaTexto, botoes);
-        });
-
-        iniciarAventura(area, botoes);
+    @Override
+    public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {
+        apresentarInicio(areaTexto);
     }
-    
-    
-    private void adicionarOpcoesArquimago(JTextArea area, JButton[] botoes) {
+
+    private void apresentarInicio(JTextArea areaTexto) {
         limparOpcoes();
-        
-        adicionarOpcao("Pedir ajuda ao Arquimago", areaTexto -> {
-            Principal.exibirDialogo("O Arquimago concorda em ajudá-lo, mas exige algo em troca...");
-            finalizarCiclo(areaTexto, botoes);
+
+        adicionarOpcao("Partir em missão", area -> {
+            Principal.exibirDialogo("Você parte para a jornada...");
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "floresta"));
+            continuarAventura("floresta", areaTexto, botoes);
         });
 
-        adicionarOpcao("Investigar o perigo sozinho", areaTexto -> {
-            Principal.exibirDialogo("Você parte em uma missão solitária e perigosa...");
-            finalizarCiclo(areaTexto, botoes);
+        adicionarOpcao("Consultar o Arquimago", area -> {
+            Principal.exibirDialogo("O Arquimago revela segredos perigosos...");
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
+            continuarAventura("arquimago", areaTexto, botoes);
         });
-        
-        iniciarAventura(area, botoes);
+
+        super.iniciarAventura(areaTexto, botoes);
     }
 
+    @Override
+    public void continuarAventura(String etapa, JTextArea areaTexto, JButton[] botoes) {
+        limparOpcoes(); // Remove opções anteriores para evitar duplicações
+
+        switch (etapa) {
+            case "inicio":
+                apresentarInicio(areaTexto);
+                break;
+
+            case "floresta":
+                areaTexto.setText("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
+                adicionarOpcao("Consultar o grimório antigo", txt -> {
+                    areaTexto.append("Você aprende um novo feitiço poderoso!\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
+                    continuarAventura("arquimago", areaTexto, botoes);
+                });
+                adicionarOpcao("Explorar ruínas mágicas", txt -> {
+                    areaTexto.append("Você encontra uma relíquia ancestral.\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
+                    continuarAventura("arquimago", areaTexto, botoes);
+                });
+                super.iniciarAventura(areaTexto, botoes);
+                break;
+
+            case "arquimago":
+                areaTexto.setText("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
+                adicionarOpcao("Pedir ensinamentos", txt -> {
+                    areaTexto.append("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
+                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
+                });
+                adicionarOpcao("Desafiá-lo para um duelo", txt -> {
+                    areaTexto.append("Após um duelo épico, você vence! Agora você é o novo Arquimago.\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
+                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
+                });
+                super.iniciarAventura(areaTexto, botoes);
+                break;
+
+            case "fim":
+                areaTexto.setText("Sua jornada como Mago chegou ao fim... mas muitas aventuras ainda o aguardam.\n");
+                finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
+                break;
+
+            default:
+                areaTexto.setText("Progresso desconhecido ou corrompido. Iniciando do começo...\n");
+                apresentarInicio(areaTexto);
+                break;
+        }
+    }
+
+    @Override
+    public void retomarProgresso(JTextArea areaTexto, EstadoJogo estado, JButton[] botoes) {
+        String etapa = estado.getEtapa();
+
+        switch (etapa) {
+            case "inicio" -> apresentarInicio(areaTexto);
+            case "floresta", "arquimago", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            default -> apresentarInicio(areaTexto);
+        }
+    }
 }

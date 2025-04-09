@@ -29,9 +29,10 @@ public class GerenciadorBotoes {
     }
     
     private static void sairJogo() {
-        if (Principal.getDialogoAtual() != null) {
+        //parte desnecessária
+        /*if (Principal.getDialogoAtual() != null) {
             Principal.getDialogoAtual().fechar();
-        }
+        }*/
         if (janelaPrincipal != null) {
             janelaPrincipal.dispose();
         }
