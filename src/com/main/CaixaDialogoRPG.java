@@ -61,6 +61,7 @@ public class CaixaDialogoRPG extends JPanel {
 
     public void adicionarMensagem(String mensagem) {
         filaMensagens.add(mensagem);
+        setVisible(true); // Garante que a caixa de diálogo seja exibida
         if (!exibindoMensagem) {
             exibirProximaMensagem();
         }
@@ -80,6 +81,7 @@ public class CaixaDialogoRPG extends JPanel {
     public void limpar() {
         filaMensagens.clear();
         textoDialogo.setText("");
+        exibindoMensagem = false; // Garante que novas mensagens possam ser exibidas
         setVisible(false);
     }
 }

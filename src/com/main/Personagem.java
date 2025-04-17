@@ -37,10 +37,14 @@ public abstract class Personagem {
         }
 
         if (botoes.length > numOpcoes) {
-            botoes[botoes.length - 1].setText("Sair 3");
+            botoes[botoes.length - 1].setText("Opções");
             botoes[botoes.length - 1].setEnabled(true);
-            botoes[botoes.length - 1].addActionListener(e -> Principal.exibirLobby(GerenciadorProgresso.carregarProgresso()));
-
+            botoes[botoes.length - 1].addActionListener(e -> {
+                if (Principal.caixaDialogo != null) {
+                    Principal.caixaDialogo.limpar(); // Limpa e oculta a caixa de diálogo
+                }
+                Principal.exibirLobby(GerenciadorProgresso.carregarProgresso()); // Volta para o lobby
+            });
         }
 
         for (int i = 0; i < numOpcoes; i++) {
@@ -64,7 +68,7 @@ public abstract class Personagem {
         resetarEventos(botoes);
     
         // Configura botão "Voltar ao Menu"
-        botoes[0].setText("Voltar ao Menu");
+        botoes[0].setText("Reiniciar Jornada");
         botoes[0].setEnabled(true);
         botoes[0].addActionListener(e -> {
             limparOpcoes();
@@ -72,8 +76,10 @@ public abstract class Personagem {
 
         });
     
-        // Configura todos os botões (incluindo Sair)
-        GerenciadorBotoes.atualizarBotaoSair();
+        // Configura botão "Sair"
+         botoes[botoes.length - 1].setText("Voltar ao Menu");
+         botoes[botoes.length - 1].setEnabled(true);
+         botoes[botoes.length - 1].addActionListener(e -> Principal.exibirLobby(GerenciadorProgresso.carregarProgresso())); 
     
         // Desativa botões intermediários se existirem
         for (int i = 1; i < botoes.length - 1; i++) {

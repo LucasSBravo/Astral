@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 public class Principal {
     private static JScrollPane scroll;
     private static JPanel painelBotoes;
-    private static CaixaDialogoRPG caixaDialogo;
+    public static CaixaDialogoRPG caixaDialogo;
     private static boolean telaCheia = true;
     private static JFrame janela;
     private static JTextArea areaTexto;
@@ -19,6 +19,11 @@ public class Principal {
         janela = new JFrame("Jogo de Aventura");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
+
+        // Define o ícone personalizado
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        janela.setIconImage(icone);
+
         configurarModoExecucao(janela);
 
         areaTexto = criarAreaTexto();
@@ -32,11 +37,17 @@ public class Principal {
     }
 
     public static void exibirLobby(EstadoJogo estadoSalvo) {
+
+        // Limpa a caixa de diálogo antes de configurar o lobby
+    if (caixaDialogo != null) {
+        caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+    }
+
         areaTexto.setText("Bem-vindo ao Jogo de Aventura!\nEscolha uma opção:");
 
         limparActionListeners(botoes);
 
-        String[] opcoes = {"Jogar", "Opções", "Sair 2"};
+        String[] opcoes = {"Jogar", "Opções", "Sair"};
         for (int i = 0; i < botoes.length; i++) {
             botoes[i].setText(opcoes[i]);
             botoes[i].setEnabled(true);
@@ -46,16 +57,29 @@ public class Principal {
         botoes[0].addActionListener(e -> {
             if (estadoSalvo != null) {
                 areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n1. Sim\n2. Novo Jogo\n3. Sair");
-
+        
                 limparActionListeners(botoes);
                 botoes[0].setText("Sim");
                 botoes[1].setText("Novo Jogo");
-                botoes[2].setText("Sair 2");
-
-                botoes[0].addActionListener(ev -> continuarJogo(areaTexto, botoes, estadoSalvo));
-                botoes[1].addActionListener(ev -> exibirMenuInicial(areaTexto, botoes, null));
+                botoes[2].setText("Sair");
+        
+                botoes[0].addActionListener(ev -> {
+                    if (caixaDialogo != null) {
+                        caixaDialogo.adicionarMensagem("Continuando o jogo...");
+                    }
+                    continuarJogo(areaTexto, botoes, estadoSalvo);
+                });
+                botoes[1].addActionListener(ev -> {
+                    if (caixaDialogo != null) {
+                        caixaDialogo.adicionarMensagem("Iniciando um novo jogo...");
+                    }
+                    exibirMenuInicial(areaTexto, botoes, null);
+                });
                 botoes[2].addActionListener(ev -> System.exit(0));
             } else {
+                if (caixaDialogo != null) {
+                    caixaDialogo.adicionarMensagem("Iniciando o jogo...");
+                }
                 exibirMenuInicial(areaTexto, botoes, null);
             }
         });
@@ -168,7 +192,11 @@ public class Principal {
     }      
 
     public static void exibirMenuInicial(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
-        String[] opcoes = {"Mago", "Bárbaro", "Salvar e sair"};
+        if (caixaDialogo != null) {
+            caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+        }
+
+        String[] opcoes = {"Mago", "Bárbaro", "Opções"};
 
         areaTexto.setText("Escolha seu personagem:\n");
 
@@ -190,7 +218,7 @@ public class Principal {
 
         botoes[0].addActionListener(e -> iniciarComPersonagem(new Mago(botoes), "Mago", areaTexto, botoes));
         botoes[1].addActionListener(e -> iniciarComPersonagem(new Barbaro(botoes), "Bárbaro", areaTexto, botoes));
-        botoes[2].addActionListener(e -> System.exit(0));
+        botoes[2].addActionListener(e -> Principal.exibirLobby(GerenciadorProgresso.carregarProgresso()));
     }
 
     private static void iniciarComPersonagem(Personagem personagem, String classe, JTextArea areaTexto, JButton[] botoes) {
