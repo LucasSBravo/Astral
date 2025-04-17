@@ -37,9 +37,10 @@ public abstract class Personagem {
         }
 
         if (botoes.length > numOpcoes) {
-            botoes[botoes.length - 1].setText("Sair");
+            botoes[botoes.length - 1].setText("Sair 3");
             botoes[botoes.length - 1].setEnabled(true);
-            botoes[botoes.length - 1].addActionListener(e -> System.exit(0));
+            botoes[botoes.length - 1].addActionListener(e -> Principal.exibirLobby(GerenciadorProgresso.carregarProgresso()));
+
         }
 
         for (int i = 0; i < numOpcoes; i++) {

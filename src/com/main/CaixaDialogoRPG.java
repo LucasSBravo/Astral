@@ -3,12 +3,10 @@ package com.main;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class CaixaDialogoRPG {
-    private JDialog dialogo;
+public class CaixaDialogoRPG extends JPanel {
     private JTextArea textoDialogo;
     private Timer temporizador;
     private int caracteresExibidos;
@@ -16,76 +14,72 @@ public class CaixaDialogoRPG {
     private Queue<String> filaMensagens = new LinkedList<>();
     private boolean exibindoMensagem = false;
 
-    public CaixaDialogoRPG(JFrame parent) {
-        // Configuração do JDialog
-        dialogo = new JDialog(parent, "", false);
-        dialogo.setUndecorated(true);
-        dialogo.setSize(600, 150);
-        dialogo.setLocationRelativeTo(parent);
-        
-        // Configuração do painel principal
-        JPanel painel = new JPanel(new BorderLayout());
-        painel.setBackground(new Color(255, 255, 200));
-        painel.setBorder(BorderFactory.createCompoundBorder(
+    public CaixaDialogoRPG() {
+        setLayout(new BorderLayout());
+        setOpaque(true); // importante!
+        setBackground(new Color(255, 255, 200));
+        setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.BLACK, 3),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        
-        // Inicialização do JTextArea
+
         textoDialogo = new JTextArea();
         textoDialogo.setEditable(false);
-        textoDialogo.setOpaque(false);
+        textoDialogo.setOpaque(false); // o texto ainda pode ser transparente se quiser
         textoDialogo.setFont(new Font("Arial", Font.BOLD, 16));
         textoDialogo.setLineWrap(true);
         textoDialogo.setWrapStyleWord(true);
-        
-        painel.add(textoDialogo, BorderLayout.CENTER);
-        
+        add(textoDialogo, BorderLayout.CENTER);
+
         JLabel indicador = new JLabel("▼ Clique em uma opção para continuar ▼");
         indicador.setHorizontalAlignment(SwingConstants.CENTER);
-        painel.add(indicador, BorderLayout.SOUTH);
-        
-        dialogo.add(painel);
-        
-        // Configuração do Timer para efeito de digitação
-        temporizador = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (caracteresExibidos < mensagemAtual.length()) {
-                    textoDialogo.setText(mensagemAtual.substring(0, caracteresExibidos + 1));
-                    caracteresExibidos++;
-                } else {
-                    temporizador.stop();
-                    exibindoMensagem = false;
-                    exibirProximaMensagem();
-                }
+        add(indicador, BorderLayout.SOUTH);
+
+        temporizador = new Timer(30, (ActionEvent e) -> {
+            if (caracteresExibidos < mensagemAtual.length()) {
+                textoDialogo.setText(mensagemAtual.substring(0, caracteresExibidos + 1));
+                caracteresExibidos++;
+            } else {
+                temporizador.stop();
+                exibindoMensagem = false;
+                exibirProximaMensagem();
             }
         });
-        
-        dialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        setVisible(false);
     }
-    
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        // desenha o fundo amarelado com cantos arredondados
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+        g2.dispose();
+        super.paintComponent(g);
+    }
+
     public void adicionarMensagem(String mensagem) {
         filaMensagens.add(mensagem);
         if (!exibindoMensagem) {
             exibirProximaMensagem();
         }
     }
-    
+
     private void exibirProximaMensagem() {
-        if (!filaMensagens.isEmpty() && textoDialogo != null) {
+        if (!filaMensagens.isEmpty()) {
             exibindoMensagem = true;
-            this.mensagemAtual = filaMensagens.poll();
-            this.caracteresExibidos = 0;
+            mensagemAtual = filaMensagens.poll();
+            caracteresExibidos = 0;
             textoDialogo.setText("");
             temporizador.start();
-            dialogo.setVisible(true);
-        }
+            setVisible(true);
+        } 
     }
-    
-    public void fechar() {
-        if (dialogo != null) {
-            dialogo.dispose();
-        }
+
+    public void limpar() {
+        filaMensagens.clear();
+        textoDialogo.setText("");
+        setVisible(false);
     }
 }

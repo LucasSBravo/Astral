@@ -5,43 +5,77 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Principal {
+    private static JScrollPane scroll;
+    private static JPanel painelBotoes;
+    private static CaixaDialogoRPG caixaDialogo;
     private static boolean telaCheia = true;
+    private static JFrame janela;
+    private static JTextArea areaTexto;
+    private static JButton[] botoes;
 
     public static void main(String[] args) {
         EstadoJogo estadoSalvo = GerenciadorProgresso.carregarProgresso();
 
-        JFrame janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Jogo de Aventura");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
         configurarModoExecucao(janela);
 
-        JTextArea areaTexto = criarAreaTexto();
-        JButton[] botoes = criarBotoes();
+        areaTexto = criarAreaTexto();
+        botoes = criarBotoes();
         FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
 
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
 
-        if (estadoSalvo != null) {
-            int opcao = JOptionPane.showOptionDialog(null,
-                    "Deseja continuar de onde parou?",
-                    "Progresso encontrado",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    new String[]{"Sim", "Novo Jogo", "Sair"},
-                    "Sim");
+        exibirLobby(estadoSalvo);
+    }
 
-            if (opcao == 0) {
-                continuarJogo(areaTexto, botoes, estadoSalvo);
-            } else if (opcao == 1) {
-                exibirMenuInicial(areaTexto, botoes, null);
-            } else {
-                System.exit(0);
-            }
-        } else {
-            exibirMenuInicial(areaTexto, botoes, null);
+    public static void exibirLobby(EstadoJogo estadoSalvo) {
+        areaTexto.setText("Bem-vindo ao Jogo de Aventura!\nEscolha uma opção:");
+
+        limparActionListeners(botoes);
+
+        String[] opcoes = {"Jogar", "Opções", "Sair 2"};
+        for (int i = 0; i < botoes.length; i++) {
+            botoes[i].setText(opcoes[i]);
+            botoes[i].setEnabled(true);
+            botoes[i].setIcon(null);
         }
+
+        botoes[0].addActionListener(e -> {
+            if (estadoSalvo != null) {
+                areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n1. Sim\n2. Novo Jogo\n3. Sair");
+
+                limparActionListeners(botoes);
+                botoes[0].setText("Sim");
+                botoes[1].setText("Novo Jogo");
+                botoes[2].setText("Sair 2");
+
+                botoes[0].addActionListener(ev -> continuarJogo(areaTexto, botoes, estadoSalvo));
+                botoes[1].addActionListener(ev -> exibirMenuInicial(areaTexto, botoes, null));
+                botoes[2].addActionListener(ev -> System.exit(0));
+            } else {
+                exibirMenuInicial(areaTexto, botoes, null);
+            }
+        });
+
+        botoes[1].addActionListener(e -> {
+            telaCheia = !telaCheia;
+            janela.dispose();
+            janela = new JFrame("Jogo de Aventura");
+            janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            janela.setUndecorated(true);
+            configurarModoExecucao(janela);
+
+            FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
+            janela.setContentPane(painelFundo);
+            janela.setVisible(true);
+
+            exibirLobby(estadoSalvo);
+        });
+
+        botoes[2].addActionListener(e -> System.exit(0));
     }
 
     private static void continuarJogo(JTextArea areaTexto, JButton[] botoes, EstadoJogo estado) {
@@ -82,26 +116,59 @@ public class Principal {
 
     private static FundoPanel criarPainelFundo(JTextArea areaTexto, JButton[] botoes) {
         Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/darkaether.png").getImage();
-        FundoPanel painelFundo = new FundoPanel(imagemFundo);
-        painelFundo.setLayout(new BorderLayout());
-
-        JScrollPane scroll = new JScrollPane(areaTexto);
+        
+        FundoPanel painelFundo = new FundoPanel(imagemFundo) {
+            @Override
+            public void doLayout() {
+                super.doLayout();
+    
+                int largura = getWidth();
+                int altura = getHeight();
+    
+                // Tamanhos fixos
+                int larguraTexto = 900;
+                int alturaTexto = 200;
+    
+                int larguraDialogo = 600;
+                int alturaDialogo = 150;
+    
+                int larguraBotoes = 500;
+                int alturaBotoes = 50;
+    
+                // Posicionamento centralizado
+                scroll.setBounds((largura - larguraTexto) / 2, altura / 5, larguraTexto, alturaTexto);
+                caixaDialogo.setBounds((largura - larguraDialogo) / 2, altura / 2 + 100, larguraDialogo, alturaDialogo);
+                painelBotoes.setBounds((largura - larguraBotoes) / 2, altura - 100, larguraBotoes, alturaBotoes);
+            }
+        };
+    
+        painelFundo.setLayout(null); // Layout absoluto com ajuste manual
+    
+        // Área de texto com scroll transparente
+        scroll = new JScrollPane(areaTexto);
         scroll.setOpaque(false);
         scroll.getViewport().setOpaque(false);
-        painelFundo.add(scroll, BorderLayout.CENTER);
-
-        JPanel painelBotoes = new JPanel(new GridLayout(1, botoes.length));
+        scroll.setBorder(null);
+        painelFundo.add(scroll);
+    
+        // Caixa de diálogo
+        caixaDialogo = new CaixaDialogoRPG();
+        caixaDialogo.setOpaque(false);
+        painelFundo.add(caixaDialogo);
+    
+        // Painel de botões
+        painelBotoes = new JPanel(new GridLayout(1, botoes.length, 10, 10));
         painelBotoes.setOpaque(false);
         for (JButton botao : botoes) {
             painelBotoes.add(botao);
         }
-
-        painelFundo.add(painelBotoes, BorderLayout.SOUTH);
+        painelFundo.add(painelBotoes);
+    
         return painelFundo;
-    }
+    }      
 
     public static void exibirMenuInicial(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
-        String[] opcoes = {"Mago", "Bárbaro", "Sair"};
+        String[] opcoes = {"Mago", "Bárbaro", "Salvar e sair"};
 
         areaTexto.setText("Escolha seu personagem:\n");
 
@@ -156,21 +223,24 @@ public class Principal {
     }
 
     public static void exibirDialogo(String mensagem) {
-        JOptionPane.showMessageDialog(null, mensagem);
-    }
+        if (caixaDialogo != null) {
+            caixaDialogo.adicionarMensagem(mensagem);
+        } else {
+            areaTexto.setText(mensagem); // Fallback
+        }
+    }    
 
     public static class FundoPanel extends JPanel {
         private Image imagem;
-    
+
         public FundoPanel(Image imagem) {
             this.imagem = imagem;
         }
-    
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(imagem, 0, 0, getWidth(), getHeight(), this);
         }
     }
-    
 }
