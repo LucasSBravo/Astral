@@ -85,18 +85,32 @@ public class Principal {
         });
 
         botoes[1].addActionListener(e -> {
-            telaCheia = !telaCheia;
-            janela.dispose();
-            janela = new JFrame("Jogo de Aventura");
-            janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            janela.setUndecorated(true);
-            configurarModoExecucao(janela);
-
-            FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
-            janela.setContentPane(painelFundo);
-            janela.setVisible(true);
-
-            exibirLobby(estadoSalvo);
+            areaTexto.setText("Opções:\nEscolha o modo de tela:");
+        
+            limparActionListeners(botoes);
+        
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+        
+            // Opção Tela Cheia
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false; // Atenção: false = fullscreen no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Opção Janela
+            botoes[1].addActionListener(ev -> {
+                telaCheia = true; // true = modo janela no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Voltar ao menu principal
+            botoes[2].addActionListener(ev -> {
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
         });
 
         botoes[2].addActionListener(e -> System.exit(0));
@@ -250,6 +264,23 @@ public class Principal {
         }
     }
 
+    private static void reiniciarJanela() {
+        janela.dispose();
+        janela = new JFrame("Jogo de Aventura");
+        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.setUndecorated(true);
+    
+        // Define ícone novamente
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        janela.setIconImage(icone);
+    
+        configurarModoExecucao(janela);
+    
+        FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
+        janela.setContentPane(painelFundo);
+        janela.setVisible(true);
+    }
+
     public static void exibirDialogo(String mensagem) {
         if (caixaDialogo != null) {
             caixaDialogo.adicionarMensagem(mensagem);
@@ -257,6 +288,7 @@ public class Principal {
             areaTexto.setText(mensagem); // Fallback
         }
     }    
+    
 
     public static class FundoPanel extends JPanel {
         private Image imagem;
