@@ -56,7 +56,7 @@ public class Principal {
 
         botoes[0].addActionListener(e -> {
             if (estadoSalvo != null) {
-                areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n1. Sim\n2. Novo Jogo\n3. Sair");
+                areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n Sim\n Novo Jogo\n Sair");
         
                 limparActionListeners(botoes);
                 botoes[0].setText("Sim");
@@ -153,7 +153,7 @@ public class Principal {
     }
 
     private static FundoPanel criarPainelFundo(JTextArea areaTexto, JButton[] botoes) {
-        Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/darkaether.png").getImage();
+        Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/darkaether.png").getImage();//darkaether.png
         
         FundoPanel painelFundo = new FundoPanel(imagemFundo) {
             @Override

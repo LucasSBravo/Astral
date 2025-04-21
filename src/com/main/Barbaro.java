@@ -43,7 +43,7 @@ public class Barbaro extends Personagem {
                 break;
 
             case "aldeia":
-                areaTexto.setText("Você chega a uma aldeia em chamas, atacada por saqueadores.\n");
+                Principal.exibirDialogo("Você chega a uma aldeia em chamas, atacada por saqueadores.\n");
                 adicionarOpcao("Proteger os aldeões", txt -> {
                     areaTexto.append("Você derrota os saqueadores e se torna herói da aldeia!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
@@ -58,7 +58,7 @@ public class Barbaro extends Personagem {
                 break;
 
             case "ataque":
-                areaTexto.setText("Você encontra o acampamento inimigo à noite.\n");
+                Principal.exibirDialogo("Você encontra o acampamento inimigo à noite.\n");
                 adicionarOpcao("Ataque frontal", txt -> {
                     areaTexto.append("Você ataca com fúria!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
@@ -73,7 +73,7 @@ public class Barbaro extends Personagem {
                 break;
 
             case "montanha":
-                areaTexto.setText("Você escala a montanha proibida em busca da Lâmina dos Deuses.\n");
+                Principal.exibirDialogo("Você escala a montanha proibida em busca da Lâmina dos Deuses.\n");
                 adicionarOpcao("Desafiar o guardião da montanha", txt -> {
                     areaTexto.append("Após uma batalha brutal, você conquista a espada lendária!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
@@ -88,12 +88,12 @@ public class Barbaro extends Personagem {
                 break;
 
             case "fim":
-                areaTexto.setText("Sua jornada como Bárbaro termina aqui. A lenda viverá para sempre...\n");
+                Principal.exibirDialogo("Sua jornada como Bárbaro termina aqui. A lenda viverá para sempre...\n");
                 finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 break;
 
             default:
-                areaTexto.setText("Progresso inválido ou corrompido. Reiniciando a história...\n");
+                Principal.exibirDialogo("Progresso inválido ou corrompido. Reiniciando a história...\n");
                 apresentarInicio(areaTexto);
                 break;
         }

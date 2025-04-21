@@ -13,6 +13,7 @@ public class CaixaDialogoRPG extends JPanel {
     private String mensagemAtual;
     private Queue<String> filaMensagens = new LinkedList<>();
     private boolean exibindoMensagem = false;
+    private JButton botaoProximo;
 
     public CaixaDialogoRPG() {
         setLayout(new BorderLayout());
@@ -23,6 +24,7 @@ public class CaixaDialogoRPG extends JPanel {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
+        // Área de texto
         textoDialogo = new JTextArea();
         textoDialogo.setEditable(false);
         textoDialogo.setOpaque(false); // o texto ainda pode ser transparente se quiser
@@ -31,10 +33,31 @@ public class CaixaDialogoRPG extends JPanel {
         textoDialogo.setWrapStyleWord(true);
         add(textoDialogo, BorderLayout.CENTER);
 
+        // Botão de próxima mensagem
+        botaoProximo = new JButton("→");
+        botaoProximo.setFont(new Font("Arial", Font.BOLD, 16));
+        botaoProximo.setFocusPainted(false);
+        botaoProximo.setBackground(Color.DARK_GRAY);
+        botaoProximo.setForeground(Color.WHITE);
+        botaoProximo.setEnabled(false); // Desabilitado até que a mensagem atual termine de ser exibida
+        botaoProximo.addActionListener(e -> {
+            if (!exibindoMensagem) {
+                exibirProximaMensagem();
+            }
+        });
+
+        // Painel inferior com o botão
+        JPanel painelInferior = new JPanel(new BorderLayout());
+        painelInferior.setOpaque(false);
+        painelInferior.add(botaoProximo, BorderLayout.EAST);
+
         JLabel indicador = new JLabel("▼ Clique em uma opção para continuar ▼");
         indicador.setHorizontalAlignment(SwingConstants.CENTER);
-        add(indicador, BorderLayout.SOUTH);
+        painelInferior.add(indicador, BorderLayout.CENTER);
 
+        add(painelInferior, BorderLayout.SOUTH);
+
+        // Temporizador para exibir texto gradualmente
         temporizador = new Timer(30, (ActionEvent e) -> {
             if (caracteresExibidos < mensagemAtual.length()) {
                 textoDialogo.setText(mensagemAtual.substring(0, caracteresExibidos + 1));
@@ -42,7 +65,7 @@ public class CaixaDialogoRPG extends JPanel {
             } else {
                 temporizador.stop();
                 exibindoMensagem = false;
-                exibirProximaMensagem();
+                botaoProximo.setEnabled(true); // Habilita o botão após exibir a mensagem
             }
         });
 
@@ -73,15 +96,20 @@ public class CaixaDialogoRPG extends JPanel {
             mensagemAtual = filaMensagens.poll();
             caracteresExibidos = 0;
             textoDialogo.setText("");
+            botaoProximo.setEnabled(false); // Desabilita o botão enquanto a mensagem está sendo exibida
             temporizador.start();
             setVisible(true);
-        } 
+        } else {
+            // Se não houver mais mensagens, mantém a última exibida
+            botaoProximo.setEnabled(false);
+        }
     }
 
     public void limpar() {
         filaMensagens.clear();
         textoDialogo.setText("");
         exibindoMensagem = false; // Garante que novas mensagens possam ser exibidas
+        botaoProximo.setEnabled(false);
         setVisible(false);
     }
 }

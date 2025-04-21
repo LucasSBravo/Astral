@@ -25,14 +25,14 @@ public abstract class Personagem {
     }
 
     public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {
-        areaTexto.append("\nO que você decide fazer?\n");
+        areaTexto.append("\nASTRAL\n");// texto permanente em todas as instancias do roteiro
         int numOpcoes = Math.min(opcoes.size(), botoes.length);
 
         resetarEventos(botoes);
 
         for (int i = 0; i < numOpcoes; i++) {
-            areaTexto.append((i + 1) + ") " + opcoes.get(i).getTexto() + "\n");
-            botoes[i].setText(opcoes.get(i).getTexto());
+           // areaTexto.append(opcoes.get(i).getTexto() + "\n"); //Mostra a escolha na tela
+            botoes[i].setText(opcoes.get(i).getTexto());// Mostra a escolha no botão
             botoes[i].setEnabled(true);
         }
 

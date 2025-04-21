@@ -43,11 +43,11 @@ public class Mago extends Personagem {
                 break;
 
             case "floresta":
-                areaTexto.setText("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
+                Principal.exibirDialogo("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
                 adicionarOpcao("Consultar o grimório antigo", txt -> {
-                    areaTexto.append("Você aprende um novo feitiço poderoso!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
                     continuarAventura("arquimago", areaTexto, botoes);
+                    Principal.exibirDialogo("Você aprende um novo feitiço poderoso!\n");//criar botao de proxima escolha
                 });
                 adicionarOpcao("Explorar ruínas mágicas", txt -> {
                     areaTexto.append("Você encontra uma relíquia ancestral.\n");
@@ -58,7 +58,7 @@ public class Mago extends Personagem {
                 break;
 
             case "arquimago":
-                areaTexto.setText("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
+                Principal.exibirDialogo("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
                 adicionarOpcao("Pedir ensinamentos", txt -> {
                     areaTexto.append("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
@@ -73,12 +73,12 @@ public class Mago extends Personagem {
                 break;
 
             case "fim":
-                areaTexto.setText("Sua jornada como Mago chegou ao fim... mas muitas aventuras ainda o aguardam.\n");
+                Principal.exibirDialogo("Sua jornada como Mago chegou ao fim... mas muitas aventuras ainda o aguardam.\n");
                 finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                 break;
 
             default:
-                areaTexto.setText("Progresso desconhecido ou corrompido. Iniciando do começo...\n");
+                Principal.exibirDialogo("Progresso desconhecido ou corrompido. Iniciando do começo...\n");
                 apresentarInicio(areaTexto);
                 break;
         }
