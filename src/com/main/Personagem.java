@@ -25,7 +25,7 @@ public abstract class Personagem {
     }
 
     public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {
-        areaTexto.append("\nASTRAL\n");// texto permanente em todas as instancias do roteiro
+       // areaTexto.append("\nASTRAL\n");// texto permanente em todas as instancias do roteiro
         int numOpcoes = Math.min(opcoes.size(), botoes.length);
 
         resetarEventos(botoes);
@@ -55,6 +55,13 @@ public abstract class Personagem {
         }
     }
 
+    public void atualizarLocalizacao(JTextArea areaTexto, String local) {
+        String textoAtual = areaTexto.getText();
+        String[] linhas = textoAtual.split("\n", 2); // Separa a primeira linha do resto
+        String resto = (linhas.length > 1) ? linhas[1] : "";
+        areaTexto.setText("Local: " + local + "\n" + resto);
+    }
+
     public abstract void retomarProgresso(JTextArea areaTexto, EstadoJogo estado, JButton[] botoes);
 
 
@@ -63,7 +70,7 @@ public abstract class Personagem {
     }
 
     protected void finalizarCiclo(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
-        areaTexto.append("\nDeseja voltar ao menu inicial?\n");
+        Principal.exibirDialogo("\nDeseja voltar ao menu inicial?\n");
 
         resetarEventos(botoes);
     

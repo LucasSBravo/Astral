@@ -45,12 +45,12 @@ public class Barbaro extends Personagem {
             case "aldeia":
                 Principal.exibirDialogo("Você chega a uma aldeia em chamas, atacada por saqueadores.\n");
                 adicionarOpcao("Proteger os aldeões", txt -> {
-                    areaTexto.append("Você derrota os saqueadores e se torna herói da aldeia!\n");
+                    Principal.exibirDialogo("Você derrota os saqueadores e se torna herói da aldeia!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
                     continuarAventura("montanha", areaTexto, botoes);
                 });
                 adicionarOpcao("Ignorar e seguir viagem", txt -> {
-                    areaTexto.append("Você ignora o pedido de ajuda... os aldeões te olham com desprezo.\n");
+                    Principal.exibirDialogo("Você ignora o pedido de ajuda... os aldeões te olham com desprezo.\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
                     continuarAventura("montanha", areaTexto, botoes);
                 });
@@ -60,12 +60,12 @@ public class Barbaro extends Personagem {
             case "ataque":
                 Principal.exibirDialogo("Você encontra o acampamento inimigo à noite.\n");
                 adicionarOpcao("Ataque frontal", txt -> {
-                    areaTexto.append("Você ataca com fúria!\n");
+                    Principal.exibirDialogo("Você ataca com fúria!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });
                 adicionarOpcao("Infiltração", txt -> {
-                    areaTexto.append("Você elimina os guardas silenciosamente.\n");
+                    Principal.exibirDialogo("Você elimina os guardas silenciosamente.\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });
@@ -75,12 +75,12 @@ public class Barbaro extends Personagem {
             case "montanha":
                 Principal.exibirDialogo("Você escala a montanha proibida em busca da Lâmina dos Deuses.\n");
                 adicionarOpcao("Desafiar o guardião da montanha", txt -> {
-                    areaTexto.append("Após uma batalha brutal, você conquista a espada lendária!\n");
+                    Principal.exibirDialogo("Após uma batalha brutal, você conquista a espada lendária!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });
                 adicionarOpcao("Buscar um caminho alternativo", txt -> {
-                    areaTexto.append("Você evita o combate, mas não encontra a espada. Seu destino é incerto...\n");
+                    Principal.exibirDialogo("Você evita o combate, mas não encontra a espada. Seu destino é incerto...\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });

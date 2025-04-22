@@ -19,12 +19,15 @@ public class Mago extends Personagem {
         limparOpcoes();
 
         adicionarOpcao("Partir em missão", area -> {
+            atualizarLocalizacao(areaTexto, "Floresta Encantada");
             Principal.exibirDialogo("Você parte para a jornada...");
+            //areaTexto.append("Você parte para a jornada..."); escreve texto fora da caixa de diálogo
             GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "floresta"));
             continuarAventura("floresta", areaTexto, botoes);
         });
 
         adicionarOpcao("Consultar o Arquimago", area -> {
+            atualizarLocalizacao(areaTexto, "Floresta Encantada");
             Principal.exibirDialogo("O Arquimago revela segredos perigosos...");
             GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
             continuarAventura("arquimago", areaTexto, botoes);
@@ -43,14 +46,15 @@ public class Mago extends Personagem {
                 break;
 
             case "floresta":
+            atualizarLocalizacao(areaTexto, "Floresta Encantada");
                 Principal.exibirDialogo("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
                 adicionarOpcao("Consultar o grimório antigo", txt -> {
+                    Principal.exibirDialogo("Você aprende um novo feitiço poderoso!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
                     continuarAventura("arquimago", areaTexto, botoes);
-                    Principal.exibirDialogo("Você aprende um novo feitiço poderoso!\n");//criar botao de proxima escolha
                 });
                 adicionarOpcao("Explorar ruínas mágicas", txt -> {
-                    areaTexto.append("Você encontra uma relíquia ancestral.\n");
+                    Principal.exibirDialogo("Você encontra uma relíquia ancestral.\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "arquimago"));
                     continuarAventura("arquimago", areaTexto, botoes);
                 });
@@ -58,18 +62,37 @@ public class Mago extends Personagem {
                 break;
 
             case "arquimago":
+            atualizarLocalizacao(areaTexto, "Torre");
                 Principal.exibirDialogo("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
                 adicionarOpcao("Pedir ensinamentos", txt -> {
-                    areaTexto.append("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
+                    Principal.exibirDialogo("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                 });
                 adicionarOpcao("Desafiá-lo para um duelo", txt -> {
-                    areaTexto.append("Após um duelo épico, você vence! Agora você é o novo Arquimago.\n");
+                    Principal.exibirDialogo("Após um duelo épico, você vence! Agora você é o novo Arquimago.\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "duelo"));
+                   // finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "duelo"));
+                    continuarAventura("duelo", areaTexto, botoes);
+                });
+                super.iniciarAventura(areaTexto, botoes);
+                break;
+
+            case "duelo": 
+            atualizarLocalizacao(areaTexto, "Em fuga");
+                Principal.exibirDialogo("Agora você deve lidar com o cadáver.\n");
+                adicionarOpcao("Enterrar", txt ->{
+                    Principal.exibirDialogo("Você enterra o corpo e saí correndo\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                 });
-                super.iniciarAventura(areaTexto, botoes);
+                adicionarOpcao("Correr", txt ->{
+                    Principal.exibirDialogo("Você foge, e os cães farejadores te encontram\n");
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
+                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
+                });
+            
+            super.iniciarAventura(areaTexto, botoes);
                 break;
 
             case "fim":

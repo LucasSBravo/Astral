@@ -39,9 +39,15 @@ public class CaixaDialogoRPG extends JPanel {
         botaoProximo.setFocusPainted(false);
         botaoProximo.setBackground(Color.DARK_GRAY);
         botaoProximo.setForeground(Color.WHITE);
-        botaoProximo.setEnabled(false); // Desabilitado até que a mensagem atual termine de ser exibida
+        botaoProximo.setEnabled(true); // Sempre habilitado, a lógica será no clique
         botaoProximo.addActionListener(e -> {
-            if (!exibindoMensagem) {
+            if (exibindoMensagem) {
+                // Interrompe o efeito de digitação e mostra o texto inteiro
+                temporizador.stop();
+                textoDialogo.setText(mensagemAtual);
+                exibindoMensagem = false;
+               // botaoProximo.setEnabled(true);
+            } else {
                 exibirProximaMensagem();
             }
         });
@@ -96,12 +102,12 @@ public class CaixaDialogoRPG extends JPanel {
             mensagemAtual = filaMensagens.poll();
             caracteresExibidos = 0;
             textoDialogo.setText("");
-            botaoProximo.setEnabled(false); // Desabilita o botão enquanto a mensagem está sendo exibida
+           // botaoProximo.setEnabled(false); // Desabilita o botão enquanto a mensagem está sendo exibida
             temporizador.start();
             setVisible(true);
         } else {
-            // Se não houver mais mensagens, mantém a última exibida
-            botaoProximo.setEnabled(false);
+            // Corrige o estado ao clicar sem mensagens
+            exibindoMensagem = false;
         }
     }
 
