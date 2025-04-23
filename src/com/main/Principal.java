@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+
 public class Principal {
     private static JScrollPane scroll;
     private static JPanel painelBotoes;
@@ -12,11 +13,13 @@ public class Principal {
     private static JFrame janela;
     private static JTextArea areaTexto;
     private static JButton[] botoes;
+    private static JLabel tituloAstral;
+    private static final JPanel painelFocoDummy = new JPanel();
 
     public static void main(String[] args) {
         EstadoJogo estadoSalvo = GerenciadorProgresso.carregarProgresso();
 
-        janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Astral");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
 
@@ -37,13 +40,11 @@ public class Principal {
     }
 
     public static void exibirLobby(EstadoJogo estadoSalvo) {
-
+        areaTexto.setText(" ");
         // Limpa a caixa de diálogo antes de configurar o lobby
     if (caixaDialogo != null) {
         caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
     }
-
-        areaTexto.setText("Bem-vindo ao Jogo de Aventura!\nEscolha uma opção:");
 
         limparActionListeners(botoes);
 
@@ -64,6 +65,8 @@ public class Principal {
                 botoes[2].setText("Sair");
         
                 botoes[0].addActionListener(ev -> {
+                    areaTexto.setText("");
+
                     if (caixaDialogo != null) {
                         caixaDialogo.adicionarMensagem("Continuando o jogo...");
                     }
@@ -177,10 +180,21 @@ public class Principal {
                 scroll.setBounds((largura - larguraTexto) / 2, altura / 5, larguraTexto, alturaTexto);
                 caixaDialogo.setBounds((largura - larguraDialogo) / 2, altura / 2 + 100, larguraDialogo, alturaDialogo);
                 painelBotoes.setBounds((largura - larguraBotoes) / 2, altura - 100, larguraBotoes, alturaBotoes);
+                tituloAstral.setBounds(0, 40, getWidth(), 60); // Centraliza no topo
+
             }
         };
     
         painelFundo.setLayout(null); // Layout absoluto com ajuste manual
+
+        // Título personalizado "Astral"
+        tituloAstral = new JLabel("Astral");
+        tituloAstral.setFont(new Font("Serif", Font.BOLD, 48)); // Altere a fonte e o tamanho aqui
+        tituloAstral.setForeground(Color.WHITE); // Altere a cor se quiser
+        tituloAstral.setHorizontalAlignment(SwingConstants.CENTER);
+        tituloAstral.setBounds(0, 40, painelFundo.getWidth(), 60); // Será ajustado pelo doLayout depois
+        painelFundo.add(tituloAstral);
+
     
         // Área de texto com scroll transparente
         scroll = new JScrollPane(areaTexto);
@@ -189,9 +203,24 @@ public class Principal {
         scroll.setBorder(null);
         painelFundo.add(scroll);
     
-        // Caixa de diálogo
+            // Caixa de diálogo
         caixaDialogo = new CaixaDialogoRPG();
         caixaDialogo.setOpaque(false);
+
+        // Listener para esconder e mostrar os botões durante a animação
+        caixaDialogo.setDialogoListener(new CaixaDialogoRPG.DialogoListener() {
+            @Override
+            public void aoIniciarAnimacao() {
+                painelBotoes.setVisible(false);
+                Principal.removerFoco();
+            }
+        
+            @Override
+            public void aoTerminarAnimacao() {
+                painelBotoes.setVisible(true);
+            }
+        });
+
         painelFundo.add(caixaDialogo);
     
         // Painel de botões
@@ -201,6 +230,11 @@ public class Principal {
             painelBotoes.add(botao);
         }
         painelFundo.add(painelBotoes);
+        // Painel dummy para capturar foco e evitar barra de digitação
+        painelFocoDummy.setFocusable(true);
+        painelFocoDummy.setOpaque(false);
+        painelFocoDummy.setBounds(0, 0, 1, 1); // invisível
+        painelFundo.add(painelFocoDummy);
     
         return painelFundo;
     }      
@@ -288,8 +322,11 @@ public class Principal {
             areaTexto.setText(mensagem); // Fallback
         }
     }    
-    
 
+    public static void removerFoco() {
+        painelFocoDummy.requestFocusInWindow();
+    } 
+    
     public static class FundoPanel extends JPanel {
         private Image imagem;
 

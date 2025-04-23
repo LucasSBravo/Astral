@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.text.DefaultCaret;
 
 public class CaixaDialogoRPG extends JPanel {
     private JTextArea textoDialogo;
@@ -14,9 +15,16 @@ public class CaixaDialogoRPG extends JPanel {
     private Queue<String> filaMensagens = new LinkedList<>();
     private boolean exibindoMensagem = false;
     private JButton botaoProximo;
+    private final JPanel focoDummy = new JPanel(); // Painel invisível para capturar foco
+
 
     public CaixaDialogoRPG() {
         setLayout(new BorderLayout());
+        // Painel invisível para capturar o foco e evitar a barra de digitação no JTextArea
+        focoDummy.setFocusable(true);
+        focoDummy.setPreferredSize(new Dimension(0, 0));
+        focoDummy.setOpaque(false);
+        add(focoDummy, BorderLayout.NORTH);
         setOpaque(true); // importante!
         setBackground(new Color(255, 255, 200));
         setBorder(BorderFactory.createCompoundBorder(
@@ -33,6 +41,10 @@ public class CaixaDialogoRPG extends JPanel {
         textoDialogo.setWrapStyleWord(true);
         add(textoDialogo, BorderLayout.CENTER);
 
+        DefaultCaret caret = (DefaultCaret) textoDialogo.getCaret();
+        caret.setBlinkRate(0);      // desliga o piscar do caret
+        caret.setVisible(false);    // esconde o caret completamente
+
         // Botão de próxima mensagem
         botaoProximo = new JButton("→");
         botaoProximo.setFont(new Font("Arial", Font.BOLD, 16));
@@ -46,7 +58,12 @@ public class CaixaDialogoRPG extends JPanel {
                 temporizador.stop();
                 textoDialogo.setText(mensagemAtual);
                 exibindoMensagem = false;
-               // botaoProximo.setEnabled(true);
+            
+                // Se essa for a última mensagem da fila, avisa que a animação terminou
+                if (filaMensagens.isEmpty() && dialogoListener != null) {
+                    dialogoListener.aoTerminarAnimacao();
+                }
+            
             } else {
                 exibirProximaMensagem();
             }
@@ -71,10 +88,14 @@ public class CaixaDialogoRPG extends JPanel {
             } else {
                 temporizador.stop();
                 exibindoMensagem = false;
-                botaoProximo.setEnabled(true); // Habilita o botão após exibir a mensagem
+                botaoProximo.setEnabled(true);
+                
+                // 🔽 Só chama o listener se não houver mais mensagens
+                if (filaMensagens.isEmpty()) {
+                    if (dialogoListener != null) dialogoListener.aoTerminarAnimacao();
+                }
             }
         });
-
         setVisible(false);
     }
 
@@ -95,6 +116,18 @@ public class CaixaDialogoRPG extends JPanel {
             exibirProximaMensagem();
         }
     }
+    
+    public interface DialogoListener {
+        void aoIniciarAnimacao();
+        void aoTerminarAnimacao();
+
+    }    
+
+    private DialogoListener dialogoListener;
+
+    public void setDialogoListener(DialogoListener listener) {
+    this.dialogoListener = listener;
+    }
 
     private void exibirProximaMensagem() {
         if (!filaMensagens.isEmpty()) {
@@ -102,8 +135,17 @@ public class CaixaDialogoRPG extends JPanel {
             mensagemAtual = filaMensagens.poll();
             caracteresExibidos = 0;
             textoDialogo.setText("");
+            textoDialogo.setCaretPosition(0);
+            textoDialogo.getCaret().setVisible(false);
+            textoDialogo.setFocusable(false);  // Pode receber foco se necessário
+            textoDialogo.setCaretPosition(0); // Reseta a posição do cursor
+            textoDialogo.getCaret().setVisible(false); // Esconde o cursor
+
            // botaoProximo.setEnabled(false); // Desabilita o botão enquanto a mensagem está sendo exibida
+           if (dialogoListener != null) dialogoListener.aoIniciarAnimacao();
             temporizador.start();
+            // Força o foco para o dummy, para evitar barra de digitação no JTextArea
+            focoDummy.requestFocusInWindow();
             setVisible(true);
         } else {
             // Corrige o estado ao clicar sem mensagens

@@ -45,8 +45,7 @@ public class Mago extends Personagem {
                 apresentarInicio(areaTexto);
                 break;
 
-            case "floresta":
-            atualizarLocalizacao(areaTexto, "Floresta Encantada");
+            case "floresta": atualizarLocalizacao(areaTexto, "Floresta Encantada");
                 Principal.exibirDialogo("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
                 adicionarOpcao("Consultar o grimório antigo", txt -> {
                     Principal.exibirDialogo("Você aprende um novo feitiço poderoso!\n");
@@ -61,8 +60,7 @@ public class Mago extends Personagem {
                 super.iniciarAventura(areaTexto, botoes);
                 break;
 
-            case "arquimago":
-            atualizarLocalizacao(areaTexto, "Torre");
+            case "arquimago":  atualizarLocalizacao(areaTexto, "Torre");
                 Principal.exibirDialogo("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
                 adicionarOpcao("Pedir ensinamentos", txt -> {
                     Principal.exibirDialogo("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
@@ -78,8 +76,7 @@ public class Mago extends Personagem {
                 super.iniciarAventura(areaTexto, botoes);
                 break;
 
-            case "duelo": 
-            atualizarLocalizacao(areaTexto, "Em fuga");
+            case "duelo": atualizarLocalizacao(areaTexto, "Em fuga");
                 Principal.exibirDialogo("Agora você deve lidar com o cadáver.\n");
                 adicionarOpcao("Enterrar", txt ->{
                     Principal.exibirDialogo("Você enterra o corpo e saí correndo\n");
