@@ -9,19 +9,17 @@ import java.util.function.Consumer;
 public abstract class Personagem {
     protected String nome;
     protected String origem;
-    protected String historia;
     protected List<Opcao> opcoes;
 
-    public Personagem(String nome, String origem, String historia) {
+    public Personagem(String nome, String origem) {
         this.nome = nome;
         this.origem = origem;
-        this.historia = historia;
         this.opcoes = new ArrayList<>();
     }
 
     public void apresentarHistoria(JTextArea areaTexto) {
         areaTexto.setText("");
-        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem + "\nHistória: " + historia);
+        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem );
     }
 
     public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {

@@ -6,7 +6,7 @@ public class Mago extends Personagem {
     private final JButton[] botoes;
 
     public Mago(JButton[] botoes) {
-        super("Mago", "Torre Arcana de Eldoria", "Você foi escolhido para recuperar um artefato mágico perdido.");
+        super("Mago", "Torre Arcana de Eldoria");
         this.botoes = botoes;
     }
 

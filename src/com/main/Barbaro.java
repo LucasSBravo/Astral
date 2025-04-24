@@ -6,7 +6,7 @@ public class Barbaro extends Personagem {
     private final JButton[] botoes;
 
     public Barbaro(JButton[] botoes) {
-        super("Bárbaro", "Tribo das Montanhas Uivantes", "Você busca vingança após um ataque à sua tribo.");
+        super("Alvar", "Feromah");
         this.botoes = botoes;
     }
 
@@ -17,17 +17,25 @@ public class Barbaro extends Personagem {
 
     private void apresentarInicio(JTextArea areaTexto) {
         limparOpcoes();
+        Principal.exibirDialogo("Nas terras distantes de Feromah,uma antiga lenda sobre um poderoso meteoro místico rondava o cotidiano.");
+        Principal.exibirDialogo("Até que em um momento...");
+        Principal.exibirDialogo("Este poderoso meteoro foi avistado pelos reis de cada reino.");
+        Principal.exibirDialogo("Que envoltos pela ganância designaram você para buscar este poderoso artefato.");
+       //Cenário 
 
-        adicionarOpcao("Seguir os invasores", area -> {
+       Principal.exibirDialogo("Alvar: pelo quê fui convocado,vossa majestade ?");
+       Principal.exibirDialogo("Rei Antros: o grande meteoro previsto pelo mago Belchior foi localizado no alto do monte  Cassian,ordeno que o traga para mim de um jeito ou de outro,Alvar,vá depressa,ou garanto que vai perder mais do que apenas sua filha!");
+       Principal.exibirDialogo("Você se encontra a porta do reino:");
+        adicionarOpcao("Ir para a rota que passa pela floresta", area -> {
             Principal.exibirDialogo("Você encontra o acampamento inimigo.");
             GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "ataque"));
             continuarAventura("ataque", areaTexto, botoes);
         });
 
-        adicionarOpcao("Buscar aliados", area -> {
-            Principal.exibirDialogo("Você chega à aldeia mais próxima.");
-            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "aldeia"));
-            continuarAventura("aldeia", areaTexto, botoes);
+        adicionarOpcao("Falar com o arquimago", area -> {
+            Principal.exibirDialogo("Arquimago: no que posso ajudar meu caro senhor?");
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "arquimago"));
+            continuarAventura("arquimago", areaTexto, botoes);
         });
 
         super.iniciarAventura(areaTexto, botoes);
@@ -42,10 +50,10 @@ public class Barbaro extends Personagem {
                 apresentarInicio(areaTexto);
                 break;
 
-            case "aldeia":
-                Principal.exibirDialogo("Você chega a uma aldeia em chamas, atacada por saqueadores.\n");
-                adicionarOpcao("Proteger os aldeões", txt -> {
-                    Principal.exibirDialogo("Você derrota os saqueadores e se torna herói da aldeia!\n");
+            case "arquimago":
+                adicionarOpcao("Eu quero saber mais sobre a Meteoro ,Adoniran", txt -> {
+                    Principal.exibirDialogo("oh meu caro,eu sinto muito,minha curiosidade se encontra no mesmo estado que a sua.");
+                    Principal.exibirDialogo("Não possuo o saber necessário para decifrar essa poderosa entidade,mas posso afirmar que possuí um poder nunca antes visto pelos homens");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
                     continuarAventura("montanha", areaTexto, botoes);
                 });
@@ -105,7 +113,7 @@ public class Barbaro extends Personagem {
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "ataque", "aldeia", "montanha", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "ataque", "arquimago", "montanha", "fim" -> continuarAventura(etapa, areaTexto, botoes);
             default -> apresentarInicio(areaTexto);
         }
     }
