@@ -57,7 +57,7 @@ public class Principal {
 
         botoes[0].addActionListener(e -> {
             if (estadoSalvo != null) {
-                areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n Sim\n Novo Jogo\n Sair");
+                areaTexto.setText("Progresso encontrado. Deseja continuar?");
         
                 limparActionListeners(botoes);
                 botoes[0].setText("Sim");
@@ -88,7 +88,7 @@ public class Principal {
         });
 
         botoes[1].addActionListener(e -> {
-            areaTexto.setText("Opções:\nEscolha o modo de tela:");
+            areaTexto.setText("Opções:");
         
             limparActionListeners(botoes);
         
