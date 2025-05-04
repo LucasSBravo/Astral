@@ -40,7 +40,8 @@ public class Barbaro extends Personagem {
        //Cenário 
 
        Principal.exibirDialogo("Alvar: pelo quê fui convocado,vossa majestade ?");
-       Principal.exibirDialogo("Rei Antros: o grande meteoro previsto pelo mago Belchior foi localizado no alto do monte Cassian, ordeno que o traga para mim de um jeito ou de outro, Alvar, vá depressa, ou garanto que vai perder mais do que apenas sua filha!");
+       Principal.exibirDialogo("Rei Antros: o grande meteoro previsto pelo mago Belchior foi localizado no alto do monte Cassian, ordeno que o traga para mim de um jeito ou de outro. ");
+       Principal.exibirDialogo("Vá depressa, Alvar, ou garanto que vai perder mais do que apenas sua filha!");
        Principal.exibirDialogo("Você se encontra a porta do reino:");
         adicionarOpcao("Ir para a rota que passa pela floresta", area -> {
             GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "floresta"));
