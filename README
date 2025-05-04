@@ -5,7 +5,7 @@ Bugs conhecidos:
     - Na aba opções do Lobby, ao colocar modo de execução Tela Cheia, é impossivel retornar ao modo Janela CORRIGIDO 
     - Ao chegar ao fim do loop de escolhas e reeiniciar o loop, a caixa de texto se mantém na tela CORRIGIDO
     - Há um aviso na classe Barbaro dizendo que o campo não está sendo utilizado, porém ele está CORRIGIDO
-    - Ao escolher rapidamente nos botões, a mensagem de texto não 'skipa' (comportamento presente na branch vh) EM PROGRESSO
+    - Ao escolher rapidamente nos botões, a mensagem de texto não 'skipa' (comportamento presente na branch vh) CORRIGIDO
     - Ao colocar modo Tela Cheia e escolher uma classe a tela pisca incessantemente (comportamento visto na estácio) CORRIGIDO
     - Ao colocar modo Tela Cheia e escolher uma classe é impossível sair do programa (comportamento visto na estácio) CORRIGIDO
     - Ao colocar modo Tela Cheia e tentar retornar para o modo Janela, o programa fecha sozinho (visto na estácio) CORRIGIDO
