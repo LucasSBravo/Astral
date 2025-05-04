@@ -35,7 +35,10 @@ public abstract class Personagem {
 
         for (int i = 0; i < numOpcoes; i++) {
            // areaTexto.append(opcoes.get(i).getTexto() + "\n"); //Mostra a escolha na tela
-            botoes[i].setText(opcoes.get(i).getTexto());// Mostra a escolha no botão
+           String textoFormatado = "<html><div style='text-align:center;'>" +
+           opcoes.get(i).getTexto().replaceAll("\n", "<br>") + // Substitui '\n' por <br> para quebrar linha
+           "</div></html>";
+            botoes[i].setText(textoFormatado); // Define o texto formatado no botão
             botoes[i].setEnabled(true);
         }
 
