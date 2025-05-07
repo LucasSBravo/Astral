@@ -4,6 +4,7 @@ import javax.swing.*;
 
 public class Barbaro extends Personagem {
     private final JButton[] botoes;
+    
 
     public Barbaro(JButton[] botoes) {
         super("Alvar", "Feromah");
@@ -138,17 +139,7 @@ public class Barbaro extends Personagem {
                 break;
             case "combate": 
             Principal.exibirDialogo("A criatura se revela");
-            Principal.exibirDialogo("*Combate épico*");
-                adicionarOpcao("Vencer", txt -> {
-                    Principal.exibirDialogo("Após o combate, Alvar, extremamente culpado pelo que fez, decide seguir viagem");
-                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
-                    continuarAventura("montanha", areaTexto, botoes);
-                });
-                adicionarOpcao("Perder", txt -> {
-                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
-                    continuarAventura("morte", areaTexto, botoes);
-                });
-                super.iniciarAventura(areaTexto, botoes);
+            iniciarCombate(areaTexto);
                 break;
             case "montanha": 
             Principal.exibirDialogo("Você chega na subida da montanha");
@@ -222,4 +213,20 @@ public class Barbaro extends Personagem {
             default -> apresentarInicio(areaTexto);
         }
     }
+
+    private void iniciarCombate(JTextArea areaTexto) {
+        limparOpcoes();
+    
+        new SistemaCombate(areaTexto, botoes,
+            () -> {
+                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
+                continuarAventura("montanha", areaTexto, botoes);
+            },
+            () -> {
+                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
+                continuarAventura("morte", areaTexto, botoes);
+            }
+        );
+    }
+    
 }

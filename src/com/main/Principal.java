@@ -39,6 +39,8 @@ public class Principal {
         exibirLobby(estadoSalvo);
     }
 
+    public static JButton botaoOpcoesCombate = new JButton("Sair");
+
     public static void exibirLobby(EstadoJogo estadoSalvo) {
         areaTexto.setText(" ");
         // Limpa a caixa de diálogo antes de configurar o lobby
@@ -230,6 +232,45 @@ public class Principal {
             painelBotoes.add(botao);
         }
         painelFundo.add(painelBotoes);
+
+        // Configuração do botão "Opções" no combate
+        if (telaCheia == false) {
+            botaoOpcoesCombate.setBounds(900, 1045, 120, 30);
+        }
+        else{
+            botaoOpcoesCombate.setBounds(580, 680, 120, 30); // Posição no canto superior esquerdo
+        }
+        botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+        botaoOpcoesCombate.addActionListener(e -> {
+            if (caixaDialogo != null) {
+                caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+            }
+            areaTexto.setText("Opções:");
+        
+            limparActionListeners(botoes);
+        
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+        
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false;
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            botoes[1].addActionListener(ev -> {
+                telaCheia = true;
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            botoes[2].addActionListener(ev -> {
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        });
+        painelFundo.add(botaoOpcoesCombate);
+
         // Painel dummy para capturar foco e evitar barra de digitação
         painelFocoDummy.setFocusable(true);
         painelFocoDummy.setOpaque(false);
