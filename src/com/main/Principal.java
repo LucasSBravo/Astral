@@ -15,6 +15,8 @@ public class Principal {
     private static JButton[] botoes;
     private static JLabel tituloAstral;
     private static final JPanel painelFocoDummy = new JPanel();
+    public static boolean emCombate = false;
+
 
     public static void main(String[] args) {
         EstadoJogo estadoSalvo = GerenciadorProgresso.carregarProgresso();
@@ -214,12 +216,16 @@ public class Principal {
             @Override
             public void aoIniciarAnimacao() {
                 painelBotoes.setVisible(false);
+                botaoOpcoesCombate.setVisible(false);
                 Principal.removerFoco();
             }
         
             @Override
             public void aoTerminarAnimacao() {
                 painelBotoes.setVisible(true);
+                if (Principal.emCombate && botaoOpcoesCombate.getParent() != null) {
+                    botaoOpcoesCombate.setVisible(true);
+                }
             }
         });
 
@@ -248,6 +254,7 @@ public class Principal {
             areaTexto.setText("Opções:");
         
             limparActionListeners(botoes);
+            botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
         
             botoes[0].setText("Tela Cheia");
             botoes[1].setText("Janela");

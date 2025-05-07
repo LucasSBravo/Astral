@@ -22,14 +22,14 @@ public class SistemaCombate {
     }
 
     private void iniciar() {
+        Principal.emCombate = true;
         Principal.exibirDialogo("Uma criatura sombria surge das sombras! Prepare-se para o combate!");
         configurarBotoes();
-        Principal.botaoOpcoesCombate.setVisible(true);
+        
     }
 
     private void configurarBotoes() {
         String[] acoes = {"Atacar", "Defender", "Esquivar"};
-
         for (int i = 0; i < botoes.length && i < acoes.length; i++) {
             JButton botao = botoes[i];
             String acao = acoes[i];
@@ -92,6 +92,7 @@ public class SistemaCombate {
         if (vidaCriatura <= 0) {
             Principal.exibirDialogo("Você derrotou a criatura!");
             Principal.botaoOpcoesCombate.setVisible(false);
+            Principal.emCombate = false;
             aoVencer.run();
             return;
         }
@@ -122,6 +123,7 @@ public class SistemaCombate {
 
         if (vidaJogador <= 0) {
             Principal.exibirDialogo("Você foi derrotado pela criatura...");
+            Principal.emCombate = false;
             Principal.botaoOpcoesCombate.setVisible(false);
             aoPerder.run();
         } else {

@@ -41,7 +41,7 @@ public class CaixaDialogoRPG extends JPanel {
         textoDialogo = new JTextArea();
         textoDialogo.setEditable(false);
         textoDialogo.setOpaque(false);
-        textoDialogo.setFont(new Font("Arial", Font.BOLD, 16));        //(fonteMedieval.deriveFont(Font.PLAIN, 20f));
+        textoDialogo.setFont(fonteMedieval.deriveFont(Font.PLAIN, 20f));        //(fonteMedieval.deriveFont(Font.PLAIN, 20f));     (new Font("Arial", Font.BOLD, 16));
         textoDialogo.setForeground(new Color(50, 30, 10)); // Marrom escuro
         textoDialogo.setLineWrap(true);
         textoDialogo.setWrapStyleWord(true);
