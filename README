@@ -1,5 +1,5 @@
 Bugs conhecidos:
-
+    - O botão "Opções" que aparece durante o combate pode aparecer em lugares diferentes em outras máquinas, uma vez que foi colocado por cordenadas
     - A CaixaDialogoRPG diz que não está usando a fonte medieval pois, intencionalmente, deixei a fonte medieval comentada e continuo utilizando a Arial
     - Ao salvar, o programa se lembra da classe porém não do progresso do usuário CORRIGIDO
     - Ao selecionar uma classe, o dialogo ocorre e é sobreescrito imediatamente pela mensagem de save CORRIGIDO
@@ -10,3 +10,4 @@ Bugs conhecidos:
     - Ao colocar modo Tela Cheia e escolher uma classe a tela pisca incessantemente (comportamento visto na estácio) CORRIGIDO
     - Ao colocar modo Tela Cheia e escolher uma classe é impossível sair do programa (comportamento visto na estácio) CORRIGIDO
     - Ao colocar modo Tela Cheia e tentar retornar para o modo Janela, o programa fecha sozinho (visto na estácio) CORRIGIDO
+
