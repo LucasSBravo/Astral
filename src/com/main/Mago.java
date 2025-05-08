@@ -6,7 +6,7 @@ public class Mago extends Personagem {
     private final JButton[] botoes;
 
     public Mago(JButton[] botoes) {
-        super("Mago", "Torre Arcana de Eldoria", "Você foi escolhido para recuperar um artefato mágico perdido.");
+        super("Mago", "Torre Arcana de Eldoria");
         this.botoes = botoes;
     }
 
@@ -45,8 +45,7 @@ public class Mago extends Personagem {
                 apresentarInicio(areaTexto);
                 break;
 
-            case "floresta":
-            atualizarLocalizacao(areaTexto, "Floresta Encantada");
+            case "floresta": atualizarLocalizacao(areaTexto, "Floresta Encantada");
                 Principal.exibirDialogo("Você entra na floresta encantada, onde energias mágicas fluem pelo ar.\n");
                 adicionarOpcao("Consultar o grimório antigo", txt -> {
                     Principal.exibirDialogo("Você aprende um novo feitiço poderoso!\n");
@@ -61,34 +60,32 @@ public class Mago extends Personagem {
                 super.iniciarAventura(areaTexto, botoes);
                 break;
 
-            case "arquimago":
-            atualizarLocalizacao(areaTexto, "Torre");
+            case "arquimago":  atualizarLocalizacao(areaTexto, "Torre");
                 Principal.exibirDialogo("Você chega à torre do Arquimago. Ele te observa com curiosidade.\n");
                 adicionarOpcao("Pedir ensinamentos", txt -> {
                     Principal.exibirDialogo("O Arquimago decide te treinar. Você se torna mais poderoso!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
-                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
+                    //finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim")); usado somente nas escolhas finais
                 });
                 adicionarOpcao("Desafiá-lo para um duelo", txt -> {
                     Principal.exibirDialogo("Após um duelo épico, você vence! Agora você é o novo Arquimago.\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "duelo"));
-                   // finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "duelo"));
+                   // finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                     continuarAventura("duelo", areaTexto, botoes);
                 });
                 super.iniciarAventura(areaTexto, botoes);
                 break;
 
-            case "duelo": 
-            atualizarLocalizacao(areaTexto, "Em fuga");
+            case "duelo": atualizarLocalizacao(areaTexto, "Em fuga");
                 Principal.exibirDialogo("Agora você deve lidar com o cadáver.\n");
                 adicionarOpcao("Enterrar", txt ->{
                     Principal.exibirDialogo("Você enterra o corpo e saí correndo\n");
-                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "duelo"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                 });
                 adicionarOpcao("Correr", txt ->{
                     Principal.exibirDialogo("Você foge, e os cães farejadores te encontram\n");
-                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "fim"));
+                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "duelo"));
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Mago", "fim"));
                 });
             
@@ -113,7 +110,7 @@ public class Mago extends Personagem {
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "floresta", "arquimago", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "floresta", "arquimago","duelo", "fim" -> continuarAventura(etapa, areaTexto, botoes); // para salvar adicione o nome do case aqui
             default -> apresentarInicio(areaTexto);
         }
     }

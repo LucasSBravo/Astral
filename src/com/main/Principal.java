@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+
 public class Principal {
     private static JScrollPane scroll;
     private static JPanel painelBotoes;
@@ -12,11 +13,16 @@ public class Principal {
     private static JFrame janela;
     private static JTextArea areaTexto;
     private static JButton[] botoes;
+    private static JLabel tituloAstral;
+    private static final JPanel painelFocoDummy = new JPanel();
+    public static boolean emCombate = false;
+    //public static SistemaCombate sistemaCombate;
+
 
     public static void main(String[] args) {
         EstadoJogo estadoSalvo = GerenciadorProgresso.carregarProgresso();
 
-        janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Astral");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
 
@@ -36,14 +42,14 @@ public class Principal {
         exibirLobby(estadoSalvo);
     }
 
-    public static void exibirLobby(EstadoJogo estadoSalvo) {
+    public static JButton botaoOpcoesCombate = new JButton("Opções");
 
+    public static void exibirLobby(EstadoJogo estadoSalvo) {
+        areaTexto.setText(" ");
         // Limpa a caixa de diálogo antes de configurar o lobby
     if (caixaDialogo != null) {
         caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
     }
-
-        areaTexto.setText("Bem-vindo ao Jogo de Aventura!\nEscolha uma opção:");
 
         limparActionListeners(botoes);
 
@@ -56,7 +62,7 @@ public class Principal {
 
         botoes[0].addActionListener(e -> {
             if (estadoSalvo != null) {
-                areaTexto.setText("Progresso encontrado. Deseja continuar?\n\n Sim\n Novo Jogo\n Sair");
+                areaTexto.setText("Progresso encontrado. Deseja continuar?");
         
                 limparActionListeners(botoes);
                 botoes[0].setText("Sim");
@@ -64,6 +70,8 @@ public class Principal {
                 botoes[2].setText("Sair");
         
                 botoes[0].addActionListener(ev -> {
+                    areaTexto.setText("");
+
                     if (caixaDialogo != null) {
                         caixaDialogo.adicionarMensagem("Continuando o jogo...");
                     }
@@ -85,7 +93,7 @@ public class Principal {
         });
 
         botoes[1].addActionListener(e -> {
-            areaTexto.setText("Opções:\nEscolha o modo de tela:");
+            areaTexto.setText("Opções:");
         
             limparActionListeners(botoes);
         
@@ -177,10 +185,21 @@ public class Principal {
                 scroll.setBounds((largura - larguraTexto) / 2, altura / 5, larguraTexto, alturaTexto);
                 caixaDialogo.setBounds((largura - larguraDialogo) / 2, altura / 2 + 100, larguraDialogo, alturaDialogo);
                 painelBotoes.setBounds((largura - larguraBotoes) / 2, altura - 100, larguraBotoes, alturaBotoes);
+                tituloAstral.setBounds(0, 40, getWidth(), 60); // Centraliza no topo
+
             }
         };
     
         painelFundo.setLayout(null); // Layout absoluto com ajuste manual
+
+        // Título personalizado "Astral"
+        tituloAstral = new JLabel("Astral");
+        tituloAstral.setFont(new Font("Serif", Font.BOLD, 48)); // Altere a fonte e o tamanho aqui
+        tituloAstral.setForeground(Color.WHITE); // Altere a cor se quiser
+        tituloAstral.setHorizontalAlignment(SwingConstants.CENTER);
+        tituloAstral.setBounds(0, 40, painelFundo.getWidth(), 60); // Será ajustado pelo doLayout depois
+        painelFundo.add(tituloAstral);
+
     
         // Área de texto com scroll transparente
         scroll = new JScrollPane(areaTexto);
@@ -189,9 +208,28 @@ public class Principal {
         scroll.setBorder(null);
         painelFundo.add(scroll);
     
-        // Caixa de diálogo
+            // Caixa de diálogo
         caixaDialogo = new CaixaDialogoRPG();
         caixaDialogo.setOpaque(false);
+
+        // Listener para esconder e mostrar os botões durante a animação
+        caixaDialogo.setDialogoListener(new CaixaDialogoRPG.DialogoListener() {
+            @Override
+            public void aoIniciarAnimacao() {
+                painelBotoes.setVisible(false);
+                botaoOpcoesCombate.setVisible(false);
+                Principal.removerFoco();
+            }
+        
+            @Override
+            public void aoTerminarAnimacao() {
+                painelBotoes.setVisible(true);
+                if (Principal.emCombate && botaoOpcoesCombate.getParent() != null) {
+                    botaoOpcoesCombate.setVisible(true);
+                }
+            }
+        });
+
         painelFundo.add(caixaDialogo);
     
         // Painel de botões
@@ -201,6 +239,67 @@ public class Principal {
             painelBotoes.add(botao);
         }
         painelFundo.add(painelBotoes);
+
+        // Configuração do botão "Opções" no combate
+        if (telaCheia == false) {
+            botaoOpcoesCombate.setBounds(900, 1045, 120, 30);
+        }
+        else{
+            botaoOpcoesCombate.setBounds(580, 680, 120, 30); // Posição no canto superior esquerdo
+        }
+        botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+        botaoOpcoesCombate.addActionListener(e -> {
+            if (caixaDialogo != null) {
+                caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+            }
+            areaTexto.setText("Opções:");
+            limparActionListeners(botoes);
+            botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+
+            botoes[0].setVisible(true);
+            botoes[1].setVisible(true);
+            botoes[2].setVisible(true); // <- setVisible true faz com que quaisquer botões[2] reapareçam na instância do combate "Atacar" "Recuperar" 
+
+        
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+
+            // Garante que todos fiquem visíveis
+            for (JButton botao : botoes) botao.setVisible(true);
+
+            // Limpa e adiciona os novos eventos
+            for (var botao : botoes) {
+                for (var l : botao.getActionListeners()) botao.removeActionListener(l);
+            }
+        
+            // Opção Tela Cheia
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false; // Atenção: false = fullscreen no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Opção Janela
+            botoes[1].addActionListener(ev -> {
+                telaCheia = true; // true = modo janela no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Voltar ao menu principal
+            botoes[2].addActionListener(ev -> {
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        });
+        
+        painelFundo.add(botaoOpcoesCombate);
+
+        // Painel dummy para capturar foco e evitar barra de digitação
+        painelFocoDummy.setFocusable(true);
+        painelFocoDummy.setOpaque(false);
+        painelFocoDummy.setBounds(0, 0, 1, 1); // invisível
+        painelFundo.add(painelFocoDummy);
     
         return painelFundo;
     }      
@@ -266,7 +365,7 @@ public class Principal {
 
     private static void reiniciarJanela() {
         janela.dispose();
-        janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Astral");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
     
@@ -288,8 +387,11 @@ public class Principal {
             areaTexto.setText(mensagem); // Fallback
         }
     }    
-    
 
+    public static void removerFoco() {
+        painelFocoDummy.requestFocusInWindow();
+    } 
+    
     public static class FundoPanel extends JPanel {
         private Image imagem;
 

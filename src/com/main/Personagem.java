@@ -9,30 +9,36 @@ import java.util.function.Consumer;
 public abstract class Personagem {
     protected String nome;
     protected String origem;
-    protected String historia;
     protected List<Opcao> opcoes;
 
-    public Personagem(String nome, String origem, String historia) {
+    public Personagem(String nome, String origem) {
         this.nome = nome;
         this.origem = origem;
-        this.historia = historia;
         this.opcoes = new ArrayList<>();
     }
 
     public void apresentarHistoria(JTextArea areaTexto) {
         areaTexto.setText("");
-        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem + "\nHistória: " + historia);
+        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem );
     }
 
     public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {
-       // areaTexto.append("\nASTRAL\n");// texto permanente em todas as instancias do roteiro
+        //areaTexto.append("\nASTRAL\n");// texto permanente em todas as instancias do roteiro
         int numOpcoes = Math.min(opcoes.size(), botoes.length);
 
         resetarEventos(botoes);
 
+        // Impede que os botões fiquem com foco visual
+        for (JButton botao : botoes) {
+            botao.setFocusable(false);
+        }
+
         for (int i = 0; i < numOpcoes; i++) {
            // areaTexto.append(opcoes.get(i).getTexto() + "\n"); //Mostra a escolha na tela
-            botoes[i].setText(opcoes.get(i).getTexto());// Mostra a escolha no botão
+           String textoFormatado = "<html><div style='text-align:center;'>" +
+           opcoes.get(i).getTexto().replaceAll("\n", "<br>") + // Substitui '\n' por <br> para quebrar linha
+           "</div></html>";
+            botoes[i].setText(textoFormatado); // Define o texto formatado no botão
             botoes[i].setEnabled(true);
         }
 
