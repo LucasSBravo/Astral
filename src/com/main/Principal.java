@@ -16,6 +16,7 @@ public class Principal {
     private static JLabel tituloAstral;
     private static final JPanel painelFocoDummy = new JPanel();
     public static boolean emCombate = false;
+    //public static SistemaCombate sistemaCombate;
 
 
     public static void main(String[] args) {
@@ -255,27 +256,23 @@ public class Principal {
         
             limparActionListeners(botoes);
             botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+            Principal.emCombate = false;
+            //botoes[0].setText("Voltar ao combate");
+            botoes[0].setText("Sair");
+            botoes[1].setText("Voltar");
         
-            botoes[0].setText("Tela Cheia");
-            botoes[1].setText("Janela");
-            botoes[2].setText("Voltar");
+            /*botoes[0].addActionListener(ev -> {
+                Principal.emCombate = true; // <-- retoma o combate
+                Principal.sistemaCombate.reexibirBotoes(); // <-- você precisa criar esse método (explico abaixo)
+            });*/
         
-            botoes[0].addActionListener(ev -> {
-                telaCheia = false;
-                reiniciarJanela();
-                exibirLobby(GerenciadorProgresso.carregarProgresso());
-            });
+            botoes[0].addActionListener(ev -> System.exit(0));
         
             botoes[1].addActionListener(ev -> {
-                telaCheia = true;
-                reiniciarJanela();
-                exibirLobby(GerenciadorProgresso.carregarProgresso());
-            });
-        
-            botoes[2].addActionListener(ev -> {
                 exibirLobby(GerenciadorProgresso.carregarProgresso());
             });
         });
+        
         painelFundo.add(botaoOpcoesCombate);
 
         // Painel dummy para capturar foco e evitar barra de digitação
@@ -348,7 +345,7 @@ public class Principal {
 
     private static void reiniciarJanela() {
         janela.dispose();
-        janela = new JFrame("Jogo de Aventura");
+        janela = new JFrame("Astral");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setUndecorated(true);
     
