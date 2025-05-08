@@ -48,7 +48,7 @@ public class SistemaCombate {
         }
 
         for (int i = acoes.length; i < botoes.length; i++) {
-            //botoes[i].setVisible(false);
+            botoes[i].setVisible(false);
         }
 
         atualizarTextoEstamina();

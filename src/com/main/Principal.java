@@ -42,7 +42,7 @@ public class Principal {
         exibirLobby(estadoSalvo);
     }
 
-    public static JButton botaoOpcoesCombate = new JButton("Sair");
+    public static JButton botaoOpcoesCombate = new JButton("Opções");
 
     public static void exibirLobby(EstadoJogo estadoSalvo) {
         areaTexto.setText(" ");
@@ -253,22 +253,42 @@ public class Principal {
                 caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
             }
             areaTexto.setText("Opções:");
-        
             limparActionListeners(botoes);
             botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
-            Principal.emCombate = false;
-            //botoes[0].setText("Voltar ao combate");
-            botoes[0].setText("Sair");
-            botoes[1].setText("Voltar");
+
+            botoes[0].setVisible(true);
+            botoes[1].setVisible(true);
+            botoes[2].setVisible(true); // <- setVisible true faz com que quaisquer botões[2] reapareçam na instância do combate "Atacar" "Recuperar" 
+
         
-            /*botoes[0].addActionListener(ev -> {
-                Principal.emCombate = true; // <-- retoma o combate
-                Principal.sistemaCombate.reexibirBotoes(); // <-- você precisa criar esse método (explico abaixo)
-            });*/
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+
+            // Garante que todos fiquem visíveis
+            for (JButton botao : botoes) botao.setVisible(true);
+
+            // Limpa e adiciona os novos eventos
+            for (var botao : botoes) {
+                for (var l : botao.getActionListeners()) botao.removeActionListener(l);
+            }
         
-            botoes[0].addActionListener(ev -> System.exit(0));
+            // Opção Tela Cheia
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false; // Atenção: false = fullscreen no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
         
+            // Opção Janela
             botoes[1].addActionListener(ev -> {
+                telaCheia = true; // true = modo janela no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Voltar ao menu principal
+            botoes[2].addActionListener(ev -> {
                 exibirLobby(GerenciadorProgresso.carregarProgresso());
             });
         });
