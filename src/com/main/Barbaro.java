@@ -148,13 +148,13 @@ public class Barbaro extends Personagem {
                 adicionarOpcao("Fazer um desejo", txt -> {
                     Principal.exibirDialogo("desejo feito...");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
-                    //continuarAventura("etapa", areaTexto, botoes);
+                    continuarAventura("etapa", areaTexto, botoes);
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });
                 adicionarOpcao("Levar pro rei", txt -> {
                     Principal.exibirDialogo("Você leva pro rei xD");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
-                    //continuarAventura("etapa", areaTexto, botoes);
+                    continuarAventura("etapa", areaTexto, botoes);
                     finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 });
                 super.iniciarAventura(areaTexto, botoes);
@@ -209,7 +209,7 @@ public class Barbaro extends Personagem {
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "floresta", "arquimago", "fada","libertar","frente","combate", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "floresta", "arquimago", "fada","libertar","frente","combate","montanha", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
             default -> apresentarInicio(areaTexto);
         }
     }

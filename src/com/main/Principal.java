@@ -42,7 +42,7 @@ public class Principal {
         exibirLobby(estadoSalvo);
     }
 
-    public static JButton botaoOpcoesCombate = new JButton("Opções");
+    public static JButton botaoOpcoesCombate = new JButton("<html>  Opções:</html>");
 
     public static void exibirLobby(EstadoJogo estadoSalvo) {
         areaTexto.setText(" ");
@@ -242,10 +242,10 @@ public class Principal {
 
         // Configuração do botão "Opções" no combate
         if (telaCheia == false) {
-            botaoOpcoesCombate.setBounds(900, 1045, 120, 30);
+            botaoOpcoesCombate.setBounds(900, 1045, 150, 45);
         }
         else{
-            botaoOpcoesCombate.setBounds(580, 680, 120, 30); // Posição no canto superior esquerdo
+            botaoOpcoesCombate.setBounds(580, 680, 150, 45); // Posição no canto superior esquerdo
         }
         botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
         botaoOpcoesCombate.addActionListener(e -> {
