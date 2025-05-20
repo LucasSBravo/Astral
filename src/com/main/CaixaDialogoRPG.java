@@ -21,6 +21,12 @@ public class CaixaDialogoRPG extends JPanel {
     private Font fonteMedieval;
 
     private final JPanel focoDummy = new JPanel();
+    private Runnable aoTerminarFila = null;
+
+public void executarAoTerminarFila(Runnable acao) {
+    this.aoTerminarFila = acao;
+}
+
 
     public CaixaDialogoRPG() {
         setLayout(new BorderLayout());
@@ -163,8 +169,18 @@ public class CaixaDialogoRPG extends JPanel {
             setVisible(true);
         } else {
             exibindoMensagem = false;
+            if (aoTerminarFila != null) {
+    aoTerminarFila.run();
+    aoTerminarFila = null; // evita chamadas duplicadas
+}
+
         }
     }
+
+    public boolean estaExibindoMensagem() {
+    return exibindoMensagem;
+}
+
 
     public void limpar() {
         filaMensagens.clear();

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class SistemaCombate {
     private int vidaJogador = 100;
-    private int vidaCriatura = 110;
+    private int vidaCriatura = 8;
     private int estaminaJogador = 6;
     private final int ESTAMINA_MAX = 10;
 
@@ -28,7 +28,7 @@ public class SistemaCombate {
 
     private void iniciar() {
         Principal.emCombate = true;
-        Principal.exibirDialogo("Prepare-se para o combate!");
+        //Principal.exibirDialogo("Prepare-se para o combate!");
         configurarBotoesTurnoJogador();
     }
 
@@ -37,7 +37,7 @@ public class SistemaCombate {
     }
 
     private void configurarBotoesTurnoJogador() {
-        String[] acoes = {"Atacar", "Recuperar estamina"};
+        String[] acoes = {"Atacar", "Recuperar"};
         for (int i = 0; i < botoes.length && i < acoes.length; i++) {
             JButton botao = botoes[i];
             String acao = acoes[i];
@@ -55,7 +55,7 @@ public class SistemaCombate {
     }
 
     private void configurarBotoesReacao() {
-        String[] reacoes = {"Defender", "Esquivar", "Recuperar estamina"};
+        String[] reacoes = {"Defender", "Esquivar", "Recuperar"};
         for (int i = 0; i < botoes.length && i < reacoes.length; i++) {
             JButton botao = botoes[i];
             String reacao = reacoes[i];
@@ -77,7 +77,7 @@ public class SistemaCombate {
             case "Atacar" -> {
                 if (gastarEstamina(3)) atacar();
             }
-            case "Recuperar estamina" -> {
+            case "Recuperar" -> {
                 estaminaJogador = Math.min(ESTAMINA_MAX, estaminaJogador + 4);
                 Principal.exibirDialogo("Você recuperou estamina!");
                 turnoCriatura();
@@ -97,7 +97,7 @@ public class SistemaCombate {
 
     private void atacar() {
         int chance = random.nextInt(100);
-        if (chance < 85) {
+        if (chance < 70) {
             int dano = 15 + random.nextInt(10);
             vidaCriatura -= dano;
             Principal.exibirDialogo("Você acerta a criatura causando " + dano + " de dano!");
@@ -110,8 +110,12 @@ public class SistemaCombate {
             Principal.exibirDialogo("Você derrotou a criatura!");
             Principal.botaoOpcoesCombate.setVisible(false);
             Principal.emCombate = false;
-            for (JButton botao : botoes) botao.setVisible(true);
             areaTexto.setText("");
+            for (JButton botao : botoes) {
+            botao.setVisible(true); // Mostra todos
+            for (var l : botao.getActionListeners()) botao.removeActionListener(l);
+            botao.setText(""); // Limpa texto ou define novamente conforme necessário
+                }
             aoVencer.run();
         } else {
             turnoCriatura();
@@ -147,7 +151,7 @@ public class SistemaCombate {
         switch (reacao) {
             case "Defender" -> {
                 if (!gastarEstamina(2)) return;
-                if (chance < 72) {
+                if (chance < 60) {
                     danoCriaturaAtual /= 2;
                     Principal.exibirDialogo("Você se defendeu e reduziu o dano!");
                     estaminaJogador = Math.min(ESTAMINA_MAX, estaminaJogador + 3);
@@ -158,7 +162,7 @@ public class SistemaCombate {
             }
             case "Esquivar" -> {
                 if (!gastarEstamina(2)) return;
-                if (chance < 60) {
+                if (chance < 40) {
                     danoCriaturaAtual = 0;
                     Principal.exibirDialogo("Você se esquivou com sucesso!");
                     estaminaJogador = Math.min(ESTAMINA_MAX, estaminaJogador + 2);
@@ -168,7 +172,7 @@ public class SistemaCombate {
                     estaminaJogador = Math.max(0, estaminaJogador - 1);
                 }
             }
-            case "Recuperar estamina" -> {
+            case "Recuperar" -> {
                 estaminaJogador = Math.min(ESTAMINA_MAX, estaminaJogador + 4);
                 Principal.exibirDialogo("Você recuperou estamina!");
             }
@@ -186,8 +190,12 @@ public class SistemaCombate {
             Principal.exibirDialogo("Você foi derrotado pela criatura...");
             Principal.emCombate = false;
             Principal.botaoOpcoesCombate.setVisible(false);
-            for (JButton botao : botoes) botao.setVisible(true);
             areaTexto.setText("");
+            for (JButton botao : botoes) {
+            botao.setVisible(true); // Mostra todos
+            for (var l : botao.getActionListeners()) botao.removeActionListener(l);
+            botao.setText(""); // Limpa texto ou define novamente conforme necessário
+                }
             aoPerder.run();
         } else {
             configurarBotoesTurnoJogador(); // volta turno do jogador
