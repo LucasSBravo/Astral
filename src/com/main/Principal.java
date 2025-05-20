@@ -4,329 +4,405 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+
 public class Principal {
-    private static CaixaDialogoRPG dialogoAtual; 
-    private static boolean telaCheia = false; // Variável para controlar o modo de execução
-    private static JFrame janela; // Janela agora é um atributo global 
-    private static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    private static JScrollPane scroll;
+    private static JPanel painelBotoes;
+    public static CaixaDialogoRPG caixaDialogo;
+    private static boolean telaCheia = true;
+    private static JFrame janela;
+    private static JTextArea areaTexto;
+    private static JButton[] botoes;
+    private static JLabel tituloAstral;
+    private static final JPanel painelFocoDummy = new JPanel();
+    public static boolean emCombate = false;
+    //public static SistemaCombate sistemaCombate;
+
+
     public static void main(String[] args) {
-        // Carregar progresso salvo
-        String progressoSalvo = GerenciadorProgresso.carregarProgresso();
-        if (progressoSalvo != null) {
-            System.out.println("Progresso carregado: " + progressoSalvo);
-        }
-        janela = new JFrame("Jogo de Aventura");
+        EstadoJogo estadoSalvo = GerenciadorProgresso.carregarProgresso();
+
+        janela = new JFrame("Astral");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        janela.setUndecorated(true); // Remove bordas e barra de título
-        janela.setLayout(new BorderLayout()); // Garante que os componentes sejam organizados corretamente
-        janela.setSize(1280, 720); // Define um tamanho inicial correto
-        janela.setLocationRelativeTo(null); // Centraliza na tela
-    
-        configurarModoExecucao(); // Aplica as configurações de tela corretamente
-    
-        // Painel com imagem de fundo
-        FundoPanel painelFundo = new FundoPanel("src/com/main/Resources/Imagens/darkaether.png");
-        painelFundo.setLayout(new BorderLayout());
-    
-        // Criando e configurando a área de texto
-        JTextArea areaTexto = new JTextArea();
-        areaTexto.setEditable(false);
-        areaTexto.setOpaque(false);
-        areaTexto.setForeground(Color.WHITE);
-        areaTexto.setFont(new Font("Arial", Font.BOLD, 18)); // Ajusta o tamanho da fonte para melhor visibilidade
-        areaTexto.setWrapStyleWord(true);
-        areaTexto.setLineWrap(true);
-        
-        JScrollPane scrollPane = new JScrollPane(areaTexto);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        painelFundo.add(scrollPane, BorderLayout.CENTER);
-    
-        // Criando painel para os botões
-        JPanel painelBotoes = new JPanel();
-        painelBotoes.setLayout(new GridLayout(1, 3));
-        painelBotoes.setOpaque(false);
-    
-        JButton[] botoes = new JButton[3];
-        for (int i = 0; i < 3; i++) {
-            botoes[i] = new JButton();
-            painelBotoes.add(botoes[i]);
-        }
+        janela.setUndecorated(true);
 
-        // Instância da CaixaDialogoRPG
-        dialogoAtual = new CaixaDialogoRPG(janela);
-    
-        painelFundo.add(painelBotoes, BorderLayout.SOUTH);
+        // Define o ícone personalizado
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        janela.setIconImage(icone);
 
-        // Adiciona botão de configurações
-        JButton botaoConfig = new JButton("⚙");
-        botaoConfig.setFocusable(false);
-        botaoConfig.setPreferredSize(new Dimension(50, 50));
-        botaoConfig.setFont(new Font("Arial", Font.BOLD, 20));
-        botaoConfig.setOpaque(false);
-        botaoConfig.addActionListener(e -> exibirOpcoes(janela));
-        
-        JPanel painelTopo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        painelTopo.setOpaque(false);
-        painelTopo.add(botaoConfig);
-        painelFundo.add(painelTopo, BorderLayout.NORTH);
+        configurarModoExecucao(janela);
+
+        areaTexto = criarAreaTexto();
+        botoes = criarBotoes();
+        FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
 
         janela.setContentPane(painelFundo);
         janela.setVisible(true);
 
-        // Exibe o lobby ao iniciar
-         exibirLobby(areaTexto, botoes, janela);
-
-         janela.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_F11) {
-                    alternarModoExecucao();
-                } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
-                    exibirOpcoes(janela);
-                }
-            }
-        });
-
-        janela.setVisible(true);
-    }
-    
-    public static void configurarModoExecucao() {
-        if (janela == null) return;
-
-        janela.dispose();
-        
-        if (telaCheia) {
-            janela.setUndecorated(true);
-            janela.setResizable(false);
-            gd.setFullScreenWindow(janela);
-        } else {
-            janela.setUndecorated(false);
-            janela.setResizable(true);
-            gd.setFullScreenWindow(null); // Sai do modo tela cheia
-    
-            janela.setSize(1280, 720); // Define a resolução personalizada corretamente
-            janela.setLocationRelativeTo(null); // Centraliza a janela
-        }
-        janela.setVisible(true);
-        janela.revalidate(); // Garante que a interface gráfica seja atualizada
-        janela.repaint(); // Força a repintura da tela
+        exibirLobby(estadoSalvo);
     }
 
-    public static void alternarModoExecucao() {
-        telaCheia = !telaCheia; // Alterna entre os modos
-        configurarModoExecucao();
+    public static JButton botaoOpcoesCombate = new JButton("<html>  Opções:</html>");
+
+    public static void exibirLobby(EstadoJogo estadoSalvo) {
+        areaTexto.setText(" ");
+        // Limpa a caixa de diálogo antes de configurar o lobby
+    if (caixaDialogo != null) {
+        caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
     }
 
-    public static void aplicarResolucaoPersonalizada() {
-        telaCheia = false;
-        configurarModoExecucao();
-    }
-
-    public static void exibirOpcoes(JFrame janela) {
-        String[] modos = {"Resolução Personalizada", "Tela Cheia"};
-        int escolha = JOptionPane.showOptionDialog(
-                janela,
-                "Escolha o modo de execução:",
-                "Opções",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                modos,
-                modos[0]
-        );
-        
-        if (escolha == 0) {
-            telaCheia = false;
-        } else if (escolha == 1) {
-            telaCheia = true;
-        }
-        
-        configurarModoExecucao();
-    }
-
-    public static void exibirLobby(JTextArea areaTexto, JButton[] botoes, JFrame janela) {
-        areaTexto.setText("\n--------------------------------------------------------\n");
-        areaTexto.append(" Bem-vindo ao Lobby!\n");
-        areaTexto.append(" Escolha uma das opções abaixo:\n");
-        areaTexto.append(" 1. Jogar\n");
-        areaTexto.append(" 2. Opções\n");
-        areaTexto.append(" 3. Sair\n");
-        areaTexto.append("--------------------------------------------------------\n");
+        limparActionListeners(botoes);
 
         String[] opcoes = {"Jogar", "Opções", "Sair"};
-
-        // Limpar ActionListeners antigos
-        for (JButton botao : botoes) {
-            for (ActionListener al : botao.getActionListeners()) {
-                botao.removeActionListener(al);
-            }
-        }
-
-        // Configurar botões
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < botoes.length; i++) {
             botoes[i].setText(opcoes[i]);
             botoes[i].setEnabled(true);
-            botoes[i].setBackground(UIManager.getColor("Button.background")); // Restaurando cor padrão de fundo
-            botoes[i].setForeground(UIManager.getColor("Button.foreground")); // Restaurando cor do texto
+            botoes[i].setIcon(null);
         }
 
-        // Ação do botão "Jogar"
         botoes[0].addActionListener(e -> {
-            areaTexto.setText(""); // Limpa o texto do lobby
-            String progressoSalvo = GerenciadorProgresso.carregarProgresso();
-            menu(areaTexto, botoes, progressoSalvo); // Executa o restante do código
+            if (estadoSalvo != null) {
+                areaTexto.setText("Progresso encontrado. Deseja continuar?");
+        
+                limparActionListeners(botoes);
+                botoes[0].setText("Sim");
+                botoes[1].setText("Novo Jogo");
+                botoes[2].setText("Sair");
+        
+                botoes[0].addActionListener(ev -> {
+                    areaTexto.setText("");
+
+                    if (caixaDialogo != null) {
+                        caixaDialogo.adicionarMensagem("Continuando o jogo...");
+                    }
+                    continuarJogo(areaTexto, botoes, estadoSalvo);
+                });
+                botoes[1].addActionListener(ev -> {
+                    if (caixaDialogo != null) {
+                        caixaDialogo.adicionarMensagem("Iniciando um novo jogo...");
+                    }
+                    exibirMenuInicial(areaTexto, botoes, null);
+                });
+                botoes[2].addActionListener(ev -> System.exit(0));
+            } else {
+                if (caixaDialogo != null) {
+                    caixaDialogo.adicionarMensagem("Iniciando o jogo...");
+                }
+                exibirMenuInicial(areaTexto, botoes, null);
+            }
         });
 
-        // Ação do botão "Opções"
         botoes[1].addActionListener(e -> {
-            exibirOpcoes(janela);
+            areaTexto.setText("Opções:");
+        
+            limparActionListeners(botoes);
+        
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+        
+            // Opção Tela Cheia
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false; // Atenção: false = fullscreen no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Opção Janela
+            botoes[1].addActionListener(ev -> {
+                telaCheia = true; // true = modo janela no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Voltar ao menu principal
+            botoes[2].addActionListener(ev -> {
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
         });
 
-        // Ação do botão "Sair"
-        botoes[2].addActionListener(e -> {
-            exibirDialogo("Você escolheu sair do jogo.");
-            System.exit(0);
-        });
+        botoes[2].addActionListener(e -> System.exit(0));
     }
 
-   /* public static void exibirOpcoes(JFrame janela) {
-        // Exibe um diálogo para escolher o modo de execução
-        String[] modos = {"Resolução Personalizada", "Tela Cheia"};
-        int escolha = JOptionPane.showOptionDialog(
-                janela,
-                "Escolha o modo de execução:",
-                "Opções",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                modos,
-                modos[0]
-        );
+    private static void continuarJogo(JTextArea areaTexto, JButton[] botoes, EstadoJogo estado) {
+        String classe = estado.getPersonagem();
+        Personagem personagem = null;
 
-        if (escolha == 0) {
-            telaCheia = true;
-        } else if (escolha == 1) {
-            telaCheia = false;
+        if ("Mago".equals(classe)) {
+            personagem = new Mago(botoes);
+        } else if ("Bárbaro".equals(classe)) {
+            personagem = new Barbaro(botoes);
         }
 
-        // Reconfigura o modo de execução
-        configurarModoExecucao();
-    }*/
+        if (personagem != null) {
+            personagem.retomarProgresso(areaTexto, estado, botoes);
+        } else {
+            exibirMenuInicial(areaTexto, botoes, null);
+        }
+    }
 
-    public static void menu(JTextArea areaTexto, JButton[] botoes, String progressoSalvo) {
-        areaTexto.setText("\n--------------------------------------------------------\n");
-        areaTexto.append(" Escolha seu personagem:\n");
-        areaTexto.append(" Mago\n");
-        areaTexto.append(" Bárbaro\n");
-        areaTexto.append(" Sair\n");
-        areaTexto.append("--------------------------------------------------------\n");
+    private static JTextArea criarAreaTexto() {
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        area.setOpaque(false);
+        area.setForeground(Color.WHITE);
+        area.setFont(new Font("Arial", Font.BOLD, 18));
+        area.setWrapStyleWord(true);
+        area.setLineWrap(true);
+        return area;
+    }
+
+    private static JButton[] criarBotoes() {
+        JButton[] botoes = new JButton[3];
+        for (int i = 0; i < botoes.length; i++) {
+            botoes[i] = new JButton();
+        }
+        return botoes;
+    }
+
+    private static FundoPanel criarPainelFundo(JTextArea areaTexto, JButton[] botoes) {
+        Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/darkaether.png").getImage();//darkaether.png
+        
+        FundoPanel painelFundo = new FundoPanel(imagemFundo) {
+            @Override
+            public void doLayout() {
+                super.doLayout();
     
-        String[] opcoes = {"Mago", "Bárbaro", "Sair"};
+                int largura = getWidth();
+                int altura = getHeight();
     
-        // Limpar ActionListeners antigos
-        for (JButton botao : botoes) {
-            for (ActionListener al : botao.getActionListeners()) {
-                botao.removeActionListener(al);
+                // Tamanhos fixos
+                int larguraTexto = 900;
+                int alturaTexto = 200;
+    
+                int larguraDialogo = 600;
+                int alturaDialogo = 150;
+    
+                int larguraBotoes = 500;
+                int alturaBotoes = 50;
+    
+                // Posicionamento centralizado
+                scroll.setBounds((largura - larguraTexto) / 2, altura / 5, larguraTexto, alturaTexto);
+                caixaDialogo.setBounds((largura - larguraDialogo) / 2, altura / 2 + 100, larguraDialogo, alturaDialogo);
+                painelBotoes.setBounds((largura - larguraBotoes) / 2, altura - 100, larguraBotoes, alturaBotoes);
+                tituloAstral.setBounds(0, 40, getWidth(), 60); // Centraliza no topo
+
             }
+        };
+    
+        painelFundo.setLayout(null); // Layout absoluto com ajuste manual
+
+        // Título personalizado "Astral"
+        tituloAstral = new JLabel("Astral");
+        tituloAstral.setFont(new Font("Serif", Font.BOLD, 48)); // Altere a fonte e o tamanho aqui
+        tituloAstral.setForeground(Color.WHITE); // Altere a cor se quiser
+        tituloAstral.setHorizontalAlignment(SwingConstants.CENTER);
+        tituloAstral.setBounds(0, 40, painelFundo.getWidth(), 60); // Será ajustado pelo doLayout depois
+        painelFundo.add(tituloAstral);
+
+    
+        // Área de texto com scroll transparente
+        scroll = new JScrollPane(areaTexto);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setBorder(null);
+        painelFundo.add(scroll);
+    
+            // Caixa de diálogo
+        caixaDialogo = new CaixaDialogoRPG();
+        caixaDialogo.setOpaque(false);
+
+        // Listener para esconder e mostrar os botões durante a animação
+        caixaDialogo.setDialogoListener(new CaixaDialogoRPG.DialogoListener() {
+            @Override
+            public void aoIniciarAnimacao() {
+                painelBotoes.setVisible(false);
+                botaoOpcoesCombate.setVisible(false);
+                Principal.removerFoco();
+            }
+        
+            @Override
+            public void aoTerminarAnimacao() {
+                painelBotoes.setVisible(true);
+                if (Principal.emCombate && botaoOpcoesCombate.getParent() != null) {
+                    botaoOpcoesCombate.setVisible(true);
+                }
+            }
+        });
+
+        painelFundo.add(caixaDialogo);
+    
+        // Painel de botões
+        painelBotoes = new JPanel(new GridLayout(1, botoes.length, 10, 10));
+        painelBotoes.setOpaque(false);
+        for (JButton botao : botoes) {
+            painelBotoes.add(botao);
         }
+        painelFundo.add(painelBotoes);
+
+        // Configuração do botão "Opções" no combate
+        if (telaCheia == false) {
+            botaoOpcoesCombate.setBounds(900, 1045, 150, 45);
+        }
+        else{
+            botaoOpcoesCombate.setBounds(580, 680, 150, 45); // Posição no canto superior esquerdo
+        }
+        botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+        botaoOpcoesCombate.addActionListener(e -> {
+            if (caixaDialogo != null) {
+                caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+            }
+            areaTexto.setText("Opções:");
+            limparActionListeners(botoes);
+            botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
+
+            botoes[0].setVisible(true);
+            botoes[1].setVisible(true);
+            botoes[2].setVisible(true); // <- setVisible true faz com que quaisquer botões[2] reapareçam na instância do combate "Atacar" "Recuperar" 
+
+        
+            botoes[0].setText("Tela Cheia");
+            botoes[1].setText("Janela");
+            botoes[2].setText("Voltar");
+
+            // Garante que todos fiquem visíveis
+            for (JButton botao : botoes) botao.setVisible(true);
+
+            // Limpa e adiciona os novos eventos
+            for (var botao : botoes) {
+                for (var l : botao.getActionListeners()) botao.removeActionListener(l);
+            }
+        
+            // Opção Tela Cheia
+            botoes[0].addActionListener(ev -> {
+                telaCheia = false; // Atenção: false = fullscreen no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Opção Janela
+            botoes[1].addActionListener(ev -> {
+                telaCheia = true; // true = modo janela no seu método
+                reiniciarJanela();
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        
+            // Voltar ao menu principal
+            botoes[2].addActionListener(ev -> {
+                exibirLobby(GerenciadorProgresso.carregarProgresso());
+            });
+        });
+        
+        painelFundo.add(botaoOpcoesCombate);
+
+        // Painel dummy para capturar foco e evitar barra de digitação
+        painelFocoDummy.setFocusable(true);
+        painelFocoDummy.setOpaque(false);
+        painelFocoDummy.setBounds(0, 0, 1, 1); // invisível
+        painelFundo.add(painelFocoDummy);
     
-        // Carregar imagem para o botão Mago
-        ImageIcon iconeMago = new ImageIcon("src/com/main/Resources/Imagens/mago.png"); // Caminho da imagem
-        Image imagemAjustadaMago = iconeMago.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        iconeMago = new ImageIcon(imagemAjustadaMago);
-    
-        // Carregar imagem para o botão Bárbaro
-        ImageIcon iconeBarbaro = new ImageIcon("src/com/main/Resources/Imagens/cav.png"); // Caminho da imagem
-        Image imagemAjustadaBarbaro = iconeBarbaro.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        iconeBarbaro = new ImageIcon(imagemAjustadaBarbaro);
-    
-        // Configurar botões
-        for (int i = 0; i < 3; i++) {
+        return painelFundo;
+    }      
+
+    public static void exibirMenuInicial(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
+        if (caixaDialogo != null) {
+            caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
+        }
+
+        String[] opcoes = {"Mago", "Bárbaro", "Opções"};
+
+        areaTexto.setText("Escolha seu personagem:\n");
+
+        ImageIcon iconeMago = new ImageIcon("src/com/main/Resources/Imagens/mago.png");
+        ImageIcon iconeBarbaro = new ImageIcon("src/com/main/Resources/Imagens/cav.png");
+        iconeMago = new ImageIcon(iconeMago.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        iconeBarbaro = new ImageIcon(iconeBarbaro.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+
+        limparActionListeners(botoes);
+
+        for (int i = 0; i < botoes.length; i++) {
             botoes[i].setText(opcoes[i]);
             botoes[i].setEnabled(true);
-            botoes[i].setBackground(UIManager.getColor("Button.background")); // Restaurando cor padrão de fundo
-            botoes[i].setForeground(UIManager.getColor("Button.foreground")); // Restaurando cor do texto
+            botoes[i].setIcon(null);
         }
-    
-        // Adicionar imagens aos botões
-        botoes[0].setIcon(iconeMago);    // Ícone para o botão Mago
-        botoes[1].setIcon(iconeBarbaro); // Ícone para o botão Bárbaro
-    
-        // Ação do botão "Sair"
-        botoes[2].addActionListener(e -> System.exit(0));
-    
-        // Ação dos botões de personagens
-        for (int i = 0; i < 2; i++) {
-            final int escolhaFinal = i;
-            botoes[i].addActionListener(e -> {
-                // Remover ícone de todos os botões antes de prosseguir
-                for (JButton botao : botoes) {
-                    botao.setIcon(null);
-                }
-    
-                // Criar personagem correspondente
-                Personagem personagem = switch (escolhaFinal) {
-                    case 0 -> new Mago(botoes);
-                    case 1 -> new Barbaro(botoes);
-                    default -> null;
-                };
-    
-                if (personagem != null) {
-                    personagem.apresentarHistoria(areaTexto);
-                    personagem.iniciarAventura(areaTexto, botoes);
-                }
-                // Salvar progresso
-                GerenciadorProgresso.salvarProgresso(opcoes[escolhaFinal]);
 
-                // Exibir mensagem na janela de diálogo
-                exibirDialogo("Você escolheu: " + opcoes[escolhaFinal] + ". Progresso salvo!");
-            });
-        }
-            // Configurar botão "Sair"
-        botoes[2].addActionListener(e -> {
-            exibirDialogo("Você escolheu sair do jogo.");
-            System.exit(0);
-        });
+        botoes[0].setIcon(iconeMago);
+        botoes[1].setIcon(iconeBarbaro);
 
-        // Exibir progresso salvo, se houver
-        if (progressoSalvo != null) {
-            exibirDialogo("Progresso carregado: " + progressoSalvo);
+        botoes[0].addActionListener(e -> iniciarComPersonagem(new Mago(botoes), "Mago", areaTexto, botoes));
+        botoes[1].addActionListener(e -> iniciarComPersonagem(new Barbaro(botoes), "Bárbaro", areaTexto, botoes));
+        botoes[2].addActionListener(e -> Principal.exibirLobby(GerenciadorProgresso.carregarProgresso()));
+    }
+
+    private static void iniciarComPersonagem(Personagem personagem, String classe, JTextArea areaTexto, JButton[] botoes) {
+        for (JButton botao : botoes) botao.setIcon(null);
+
+        personagem.apresentarHistoria(areaTexto);
+        personagem.iniciarAventura(areaTexto, botoes);
+
+        EstadoJogo estado = new EstadoJogo(classe + ":Inicio", classe);
+        GerenciadorProgresso.salvarProgresso(estado);
+    }
+
+    private static void limparActionListeners(JButton[] botoes) {
+        for (JButton botao : botoes) {
+            for (ActionListener listener : botao.getActionListeners()) {
+                botao.removeActionListener(listener);
+            }
         }
     }
+
+    public static void configurarModoExecucao(JFrame janela) {
+        if (telaCheia) {
+            janela.setSize(1280, 720);
+            janela.setLocationRelativeTo(null);
+        } else {
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            janela.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+            gd.setFullScreenWindow(janela);
+        }
+    }
+
+    private static void reiniciarJanela() {
+        janela.dispose();
+        janela = new JFrame("Astral");
+        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.setUndecorated(true);
     
-   
+        // Define ícone novamente
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        janela.setIconImage(icone);
+    
+        configurarModoExecucao(janela);
+    
+        FundoPanel painelFundo = criarPainelFundo(areaTexto, botoes);
+        janela.setContentPane(painelFundo);
+        janela.setVisible(true);
+    }
+
     public static void exibirDialogo(String mensagem) {
-        if (dialogoAtual == null) {
-            throw new IllegalStateException("Caixa de diálogo não foi inicializada.");
+        if (caixaDialogo != null) {
+            caixaDialogo.adicionarMensagem(mensagem);
+        } else {
+            areaTexto.setText(mensagem); // Fallback
         }
-        dialogoAtual.adicionarMensagem(mensagem);
-    }
+    }    
+
+    public static void removerFoco() {
+        painelFocoDummy.requestFocusInWindow();
+    } 
     
-    public static CaixaDialogoRPG getDialogoAtual() {
-        return dialogoAtual;
-    }
-   
-}
+    public static class FundoPanel extends JPanel {
+        private Image imagem;
 
-	
-class FundoPanel extends JPanel {
-    private Image imagemFundo;
-
-    public FundoPanel(String caminhoImagem) {
-        try {
-            imagemFundo = new ImageIcon(caminhoImagem).getImage();
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem: " + e.getMessage());
+        public FundoPanel(Image imagem) {
+            this.imagem = imagem;
         }
-    }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);  // Chama o método pai para garantir que o painel seja pintado corretamente
-        if (imagemFundo != null) {
-            // Redimensionando a imagem para o tamanho do painel
-            g.drawImage(imagemFundo, 0, 0, getWidth(), getHeight(), this);
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(imagem, 0, 0, getWidth(), getHeight(), this);
         }
     }
 }

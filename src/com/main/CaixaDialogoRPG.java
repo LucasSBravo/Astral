@@ -3,89 +3,190 @@ package com.main;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.text.DefaultCaret;
 
-public class CaixaDialogoRPG {
-    private JDialog dialogo;
+public class CaixaDialogoRPG extends JPanel {
     private JTextArea textoDialogo;
     private Timer temporizador;
     private int caracteresExibidos;
     private String mensagemAtual;
     private Queue<String> filaMensagens = new LinkedList<>();
     private boolean exibindoMensagem = false;
+    private JButton botaoProximo;
+    private Image fundoPergaminho;
+    // private Image manchaTinta;
+    private Font fonteMedieval;
 
-    public CaixaDialogoRPG(JFrame parent) {
-        // Configuração do JDialog
-        dialogo = new JDialog(parent, "", false);
-        dialogo.setUndecorated(true);
-        dialogo.setSize(600, 150);
-        dialogo.setLocationRelativeTo(parent);
-        
-        // Configuração do painel principal
-        JPanel painel = new JPanel(new BorderLayout());
-        painel.setBackground(new Color(255, 255, 200));
-        painel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.BLACK, 3),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-        
-        // Inicialização do JTextArea
+    private final JPanel focoDummy = new JPanel();
+    private Runnable aoTerminarFila = null;
+
+public void executarAoTerminarFila(Runnable acao) {
+    this.aoTerminarFila = acao;
+}
+
+
+    public CaixaDialogoRPG() {
+        setLayout(new BorderLayout());
+
+        // Carrega imagens e fonte
+        fundoPergaminho = new ImageIcon(getClass().getResource("/com/main/Resources/Imagens/pergaminho.jpg")).getImage();
+        // manchaTinta = new ImageIcon(getClass().getResource("/images/mancha.png")).getImage();
+        carregarFonteMedieval();
+
+        // Painel invisível para foco
+        focoDummy.setFocusable(true);
+        focoDummy.setPreferredSize(new Dimension(0, 0));
+        focoDummy.setOpaque(false);
+        add(focoDummy, BorderLayout.NORTH);
+
+        setOpaque(false);
+
         textoDialogo = new JTextArea();
         textoDialogo.setEditable(false);
         textoDialogo.setOpaque(false);
-        textoDialogo.setFont(new Font("Arial", Font.BOLD, 16));
+        textoDialogo.setFont(new Font("Arial", Font.BOLD, 16));        //(fonteMedieval.deriveFont(Font.PLAIN, 20f));     (new Font("Arial", Font.BOLD, 16));
+        textoDialogo.setForeground(new Color(50, 30, 10)); // Marrom escuro
         textoDialogo.setLineWrap(true);
         textoDialogo.setWrapStyleWord(true);
-        
-        painel.add(textoDialogo, BorderLayout.CENTER);
-        
-        JLabel indicador = new JLabel("▼ Clique em uma opção para continuar ▼");
-        indicador.setHorizontalAlignment(SwingConstants.CENTER);
-        painel.add(indicador, BorderLayout.SOUTH);
-        
-        dialogo.add(painel);
-        
-        // Configuração do Timer para efeito de digitação
-        temporizador = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (caracteresExibidos < mensagemAtual.length()) {
-                    textoDialogo.setText(mensagemAtual.substring(0, caracteresExibidos + 1));
-                    caracteresExibidos++;
-                } else {
-                    temporizador.stop();
-                    exibindoMensagem = false;
-                    exibirProximaMensagem();
+        add(textoDialogo, BorderLayout.CENTER);
+
+        DefaultCaret caret = (DefaultCaret) textoDialogo.getCaret();
+        caret.setBlinkRate(0);
+        caret.setVisible(false);  
+
+
+        botaoProximo = new JButton("→");
+        botaoProximo.setFont(new Font("SansSerif", Font.BOLD, 24));
+        botaoProximo.setFocusPainted(false);
+        botaoProximo.setBackground(new Color(100, 60, 20));
+        botaoProximo.setForeground(Color.WHITE);
+        botaoProximo.setBorder(BorderFactory.createLineBorder(new Color(60, 40, 20), 2));
+        botaoProximo.setPreferredSize(new Dimension(30, 30));
+        botaoProximo.setMargin(new Insets(5, 5, 5, 5));
+        botaoProximo.addActionListener(e -> {
+            if (exibindoMensagem) {
+                temporizador.stop();
+                textoDialogo.setText(mensagemAtual);
+                exibindoMensagem = false;
+                if (filaMensagens.isEmpty() && dialogoListener != null) {
+                    dialogoListener.aoTerminarAnimacao();
                 }
+            } else {
+                exibirProximaMensagem();
             }
         });
+
+
+        JPanel painelInferior = new JPanel(new BorderLayout());
+        painelInferior.setOpaque(false);
+        painelInferior.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
+        painelInferior.add(botaoProximo, BorderLayout.EAST);
         
-        dialogo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JLabel indicador = new JLabel("▼ Escolha uma opção ▼");
+        indicador.setHorizontalAlignment(SwingConstants.CENTER);
+        indicador.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        indicador.setForeground(new Color(80, 40, 10));
+        painelInferior.add(indicador, BorderLayout.CENTER);
+
+        add(painelInferior, BorderLayout.SOUTH);
+
+        temporizador = new Timer(30, (ActionEvent e) -> {
+            if (caracteresExibidos < mensagemAtual.length()) {
+                textoDialogo.setText(mensagemAtual.substring(0, caracteresExibidos + 1));
+                caracteresExibidos++;
+            } else {
+                temporizador.stop();
+                exibindoMensagem = false;
+                botaoProximo.setEnabled(true);
+                if (filaMensagens.isEmpty() && dialogoListener != null) dialogoListener.aoTerminarAnimacao();
+            }
+        });
+
+        setVisible(false);
     }
-    
+
+    private void carregarFonteMedieval() {
+        try {
+            InputStream is = getClass().getResourceAsStream("/com/main/Resources/Fontes/BLKCHCRY.TTF");
+            fonteMedieval = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception e) {
+            fonteMedieval = new Font("Serif", Font.BOLD, 20);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+        // Fundo de pergaminho
+        g2d.drawImage(fundoPergaminho, 0, 0, getWidth(), getHeight(), this);
+
+        // Manchas de tinta (pode adicionar várias em posições diferentes)
+        // g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f)); // Transparência
+        // g2d.drawImage(manchaTinta, 50, 50, 150, 100, this);
+
+        g2d.dispose();
+    }
+
     public void adicionarMensagem(String mensagem) {
         filaMensagens.add(mensagem);
+        setVisible(true);
         if (!exibindoMensagem) {
             exibirProximaMensagem();
         }
     }
-    
+
+    public interface DialogoListener {
+        void aoIniciarAnimacao();
+        void aoTerminarAnimacao();
+    }
+
+    private DialogoListener dialogoListener;
+
+    public void setDialogoListener(DialogoListener listener) {
+        this.dialogoListener = listener;
+    }
+
     private void exibirProximaMensagem() {
-        if (!filaMensagens.isEmpty() && textoDialogo != null) {
+        if (!filaMensagens.isEmpty()) {
             exibindoMensagem = true;
-            this.mensagemAtual = filaMensagens.poll();
-            this.caracteresExibidos = 0;
+            mensagemAtual = filaMensagens.poll();
+            caracteresExibidos = 0;
             textoDialogo.setText("");
+            textoDialogo.setCaretPosition(0);
+            textoDialogo.getCaret().setVisible(false);
+            textoDialogo.setFocusable(false);
+            if (dialogoListener != null) dialogoListener.aoIniciarAnimacao();
             temporizador.start();
-            dialogo.setVisible(true);
+            focoDummy.requestFocusInWindow();
+            setVisible(true);
+        } else {
+            exibindoMensagem = false;
+            if (aoTerminarFila != null) {
+    aoTerminarFila.run();
+    aoTerminarFila = null; // evita chamadas duplicadas
+}
+
         }
     }
-    
-    public void fechar() {
-        if (dialogo != null) {
-            dialogo.dispose();
-        }
+
+    public boolean estaExibindoMensagem() {
+    return exibindoMensagem;
+}
+
+
+    public void limpar() {
+        filaMensagens.clear();
+        textoDialogo.setText("");
+        exibindoMensagem = false;
+        botaoProximo.setEnabled(false);
+        setVisible(false);
     }
 }

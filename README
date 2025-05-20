@@ -1,6 +1,10 @@
 Bugs conhecidos:
+<<<<<<< HEAD
     - O botão "Opções" que aparece durante o combate pode aparecer em lugares diferentes em outras máquinas, uma vez que foi colocado por cordenadas
     - A CaixaDialogoRPG diz que não está usando a fonte medieval pois, intencionalmente, deixei a fonte medieval comentada e continuo utilizando a Arial
+=======
+
+>>>>>>> vh
     - Ao salvar, o programa se lembra da classe porém não do progresso do usuário CORRIGIDO
     - Ao selecionar uma classe, o dialogo ocorre e é sobreescrito imediatamente pela mensagem de save CORRIGIDO
     - Na aba opções do Lobby, ao colocar modo de execução Tela Cheia, é impossivel retornar ao modo Janela CORRIGIDO 
