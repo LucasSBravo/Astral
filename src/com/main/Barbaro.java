@@ -150,13 +150,14 @@ public class Barbaro extends Personagem {
                     Principal.exibirDialogo("Alvar percebe que Elena não está usando o colar que ele lhe deu de presente");
                     Principal.exibirDialogo("Alvar: Você não é minha filha.");
                     EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
-if (estado == null) {
-    estado = new EstadoJogo("Bárbaro", "combate");
-} else {
-    estado.setProximaEtapa("combate");
-}
-GerenciadorProgresso.salvarProgresso(estado);
-
+                    //para salvar uma escolha precisa dessa estrutura
+                    if (estado == null) {
+                        estado = new EstadoJogo("Bárbaro", "combate");
+                    } else {
+                        estado.setProximaEtapa("combate");
+                    }
+                    GerenciadorProgresso.salvarProgresso(estado);
+                    //
                     continuarAventura("combate", areaTexto, botoes);
                 });
                 super.iniciarAventura(areaTexto, botoes);
@@ -185,11 +186,11 @@ GerenciadorProgresso.salvarProgresso(estado);
 
                 } else {
                     Principal.exibirDialogo("Alvar: Eu não o temo criatura nefasta!");
-                    continuarAventura("dois", areaTexto, botoes);
+                    continuarAventura("gelo", areaTexto, botoes);
                 }
                 super.iniciarAventura(areaTexto, botoes);
                 break;
-            case "dois": //*o personagem se encontra à frente de uma vasta e densa mata:
+            case "gelo": //*o personagem se encontra à frente de uma vasta e densa mata:
             // Oculta os botões antes de exibir a mensagem de combate
             for (JButton botao : botoes) {
                 botao.setVisible(false);
@@ -198,22 +199,45 @@ GerenciadorProgresso.salvarProgresso(estado);
                 break;
 
             case "montaa": 
-            Principal.exibirDialogo("etapa");
-                adicionarOpcao("Desafiar o guardião da montanha", txt -> {
-                    Principal.exibirDialogo("Após uma batalha brutal, você conquista a espada lendária!\n");
+            Principal.exibirDialogo("*Você chega ao topo e encontra pedaços do meteoro e no meio de uma cratera,uma estrela cadente*");
+            Principal.exibirDialogo("*Dela uma poderosa voz ecoa*");
+            Principal.exibirDialogo("Voz:aquele que ousar se aproximar realize seu maior desejo,o preço por isso será equivalente ao que seu coração anseia. ");
+            Principal.exibirDialogo("Tudo que é dado à alguém será tirado de outros");
+                adicionarOpcao("Fazer um desejo", txt -> {
+                    Principal.exibirDialogo("Alvar: Eu quero minha filha de volta!");
+                    Principal.exibirDialogo("Voz: Um desejo sincero vindo do coração não será negado à ninguém");
+                    Principal.exibirDialogo("Voz: Vosso coração foi ferido por esse mundo,um pequeno anjo foi morto pela crueldade da floresta");
+                    Principal.exibirDialogo("Voz: Eu enxergo Paternidade no seu coração, eu enxergo uma verdade tão pontual quanto o sol que todos os dias nasce e se põe");
+                    Principal.exibirDialogo("Voz: Você terá sua filha novamente lenhador de Albour,ao custo de algo de mesmo valor");
+                    Principal.exibirDialogo("*sua filha reaparece na sua frente*");
+                    Principal.exibirDialogo("Elena: Papai!?");
+                    Principal.exibirDialogo("Alvar: Elena!!");
+                    Principal.exibirDialogo("*Você retorna a sua casa,mesmo sabendo das consequências,sua alegria sobrepõe a culpa,sua filha está de volta*");
+                    Principal.exibirDialogo("*Você e elena retornam ao seu lar,uma antiga lápide é partida ao meio com um golpe do machado*");
+                    Principal.exibirDialogo("Aproveite os seu dias,Nobre lenhador, dê valor a cada segundo");
+                    Principal.exibirDialogo("Sua pequenina retornou... \n\n *Fim de jogo");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
-                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
+                    continuarAventura("fim", areaTexto, botoes);
                 });
-                adicionarOpcao("Buscar um caminho alternativo", txt -> {
-                    Principal.exibirDialogo("Você evita o combate, mas não encontra a espada. Seu destino é incerto...\n");
+                adicionarOpcao("Levar para o Rei", txt -> {
+                    Principal.exibirDialogo("*a poderosa estrela é levada em suas mãos,o caminho é torturante,Algo segue tentado seu coração para que use o desejo para seu próprio objetivo.*");
+                    Principal.exibirDialogo("*porém você segue com seus olhos voltados para  o castelo,sua mente está limpa como as planícies.*");
+                    Principal.exibirDialogo("Rei: Você se provou digno,Ilvar.");
+                    Principal.exibirDialogo("Retorne a sua casa,meus Guardas levarão sua recompensa.");
+                    Principal.exibirDialogo("Rei: AGORA SUMA!!");
+                    Principal.exibirDialogo("*Ao sair do castelo,tudo que seu coração pede é um lar,talvez uma pequena cabana já cansada do luto que a envolve*");
+                    Principal.exibirDialogo("*Uma casa velha com uma lápide ao lado é tudo que te restou*");
+                    Principal.exibirDialogo("*Você se ajoelha ao túmulo*");
+                    Principal.exibirDialogo("Alvar: Ninguém deve sofrer a dor que eu sofri no dia que eu te perdi");
+                    Principal.exibirDialogo("Fim de jogo");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
-                    finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
+                    continuarAventura("fim", areaTexto, botoes);
                 });
                 super.iniciarAventura(areaTexto, botoes);
                 break;
 
             case "fim":
-                Principal.exibirDialogo("Sua jornada como Bárbaro termina aqui. A lenda viverá para sempre...\n");
+                Principal.exibirDialogo("Obrigado por jogar!!!");
                 finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 break;
             case "morte":
@@ -234,7 +258,7 @@ GerenciadorProgresso.salvarProgresso(estado);
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "floresta", "arquimago", "fada","libertar","frente","combate", "dois", "montaa", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "floresta", "arquimago", "fada","libertar","frente","combate", "gelo", "montanha", "montaa", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
             default -> apresentarInicio(areaTexto);
         }
     }
@@ -245,13 +269,13 @@ GerenciadorProgresso.salvarProgresso(estado);
         new SistemaCombate(areaTexto, botoes,
             () -> {
                 EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
-if (estado == null) {
-    estado = new EstadoJogo("Bárbaro", "montanha");
-} else {
-    estado.setEtapa("montanha"); // ou estado.setProximaEtapa("montanha") se preferir manter o método novo
-}
-GerenciadorProgresso.salvarProgresso(estado);
-continuarAventura("montanha", areaTexto, botoes);
+                if (estado == null) {
+                    estado = new EstadoJogo("Bárbaro", "montanha");
+                } else {
+                    estado.setEtapa("montanha"); // ou estado.setProximaEtapa("montanha") se preferir manter o método novo
+                }
+                GerenciadorProgresso.salvarProgresso(estado);
+                continuarAventura("montanha", areaTexto, botoes);
 
             },
             () -> {
