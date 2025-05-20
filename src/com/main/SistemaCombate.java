@@ -28,7 +28,7 @@ public class SistemaCombate {
 
     private void iniciar() {
         Principal.emCombate = true;
-        //Principal.exibirDialogo("Prepare-se para o combate!");
+        Principal.exibirDialogo("");
         configurarBotoesTurnoJogador();
     }
 

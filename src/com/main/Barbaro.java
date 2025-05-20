@@ -149,38 +149,56 @@ public class Barbaro extends Personagem {
                 adicionarOpcao("Se questionar se é real", txt -> {
                     Principal.exibirDialogo("Alvar percebe que Elena não está usando o colar que ele lhe deu de presente");
                     Principal.exibirDialogo("Alvar: Você não é minha filha.");
-                    GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "combate"));
+                    EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
+if (estado == null) {
+    estado = new EstadoJogo("Bárbaro", "combate");
+} else {
+    estado.setProximaEtapa("combate");
+}
+GerenciadorProgresso.salvarProgresso(estado);
+
                     continuarAventura("combate", areaTexto, botoes);
                 });
                 super.iniciarAventura(areaTexto, botoes);
                 break;
             case "combate": 
+            for (JButton botao : botoes) {
+             botao.setVisible(false);
+                 }
             Principal.exibirDialogo("A criatura se revela");
-            iniciarCombate(areaTexto);
+            esperarDialogoEExecutar(() -> iniciarCombate(areaTexto));
                 break;
             case "montanha": 
             areaTexto.setText("");
             Principal.exibirDialogo("*Após o combate você decide continuar a sua jornada*");
             Principal.exibirDialogo("Você chega na subida da montanha");
-            Principal.exibirDialogo("*o personagem se depara com uma escalada voraz que se sustenta até o topo do monte");
-            Principal.exibirDialogo("*o personagem chega ao topo e encontra pedaços do meteoro e no meio de uma cratera,uma estrela cadente");
+            Principal.exibirDialogo("*Você se depara com uma escalada voraz que se sustenta até o topo do monte");
+            //talvez uma cinemática aqui
+            Principal.exibirDialogo("*O personagem sobe todo o percurso da montanha");
+            Principal.exibirDialogo("*uma criatura feita de neve e gelo surge e bloqueia o seu caminho*");
             EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
                 if (estado != null && estado.getEscolha("salvouFada")) {
-                    Principal.exibirDialogo("A fada que você salvou reaparece e concede a bênção dos ventos.");
+                    Principal.exibirDialogo("*A fada que você salvou reaparece*");
+                    Principal.exibirDialogo("Fada: Os bons corações merecem justiça!\n\n Que nada seja capaz de o impedir");
+                    Principal.exibirDialogo("*A cratura é derretida e evapora diante de seus olhos*");
                     continuarAventura("montaa", areaTexto, botoes);
 
                 } else {
-                    Principal.exibirDialogo("Você sente que alguma ajuda mágica poderia ter sido útil aqui...");
+                    Principal.exibirDialogo("Alvar: Eu não o temo criatura nefasta!");
                     continuarAventura("dois", areaTexto, botoes);
                 }
                 super.iniciarAventura(areaTexto, botoes);
                 break;
             case "dois": //*o personagem se encontra à frente de uma vasta e densa mata:
-            Principal.exibirDialogo("combate contra golem de gelo");
+            // Oculta os botões antes de exibir a mensagem de combate
+            for (JButton botao : botoes) {
+                botao.setVisible(false);
+                 }
                 esperarDialogoEExecutar(() -> iniciarCombate2(areaTexto));
                 break;
 
             case "montaa": 
+            Principal.exibirDialogo("etapa");
                 adicionarOpcao("Desafiar o guardião da montanha", txt -> {
                     Principal.exibirDialogo("Após uma batalha brutal, você conquista a espada lendária!\n");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
@@ -216,7 +234,7 @@ public class Barbaro extends Personagem {
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "floresta", "arquimago", "fada","libertar","frente","combate", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "floresta", "arquimago", "fada","libertar","frente","combate", "dois", "montaa", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
             default -> apresentarInicio(areaTexto);
         }
     }
@@ -226,8 +244,15 @@ public class Barbaro extends Personagem {
     
         new SistemaCombate(areaTexto, botoes,
             () -> {
-                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montanha"));
-                continuarAventura("montanha", areaTexto, botoes);
+                EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
+if (estado == null) {
+    estado = new EstadoJogo("Bárbaro", "montanha");
+} else {
+    estado.setEtapa("montanha"); // ou estado.setProximaEtapa("montanha") se preferir manter o método novo
+}
+GerenciadorProgresso.salvarProgresso(estado);
+continuarAventura("montanha", areaTexto, botoes);
+
             },
             () -> {
                 GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));

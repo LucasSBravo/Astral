@@ -29,6 +29,11 @@ public class EstadoJogo implements Serializable {
         return etapa;
     }
 
+    public void setProximaEtapa(String etapa) {
+    this.etapa = etapa;
+}
+
+
     public void setEtapa(String etapa) {
         this.etapa = etapa;
     }
