@@ -33,7 +33,7 @@ public class SistemaCombate {
 
     private void iniciar() {
         Principal.emCombate = true;
-        Principal.exibirDialogo("");
+        Principal.exibirDialogo("Lute por sua vida!");
         configurarBotoesTurnoJogador();
     }
 

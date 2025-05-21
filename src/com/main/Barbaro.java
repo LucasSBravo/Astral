@@ -7,7 +7,7 @@ public class Barbaro extends Personagem {
     
 
     public Barbaro(JButton[] botoes) {
-        super("Alvar", "Feromah");
+        super("Alvar", "Albour");
         this.botoes = botoes;
     }
 
@@ -40,8 +40,8 @@ public class Barbaro extends Personagem {
         Principal.exibirDialogo("Que envoltos pela ganância designaram você para buscar este poderoso artefato.");
        //Cenário 
 
-       Principal.exibirDialogo("Alvar: pelo quê fui convocado,vossa majestade ?");
-       Principal.exibirDialogo("Rei Antros: o grande meteoro previsto pelo mago Belchior foi localizado no alto do monte Cassian, ordeno que o traga para mim de um jeito ou de outro. ");
+       Principal.exibirDialogo("Alvar: Pelo quê fui convocado, Vossa Majestade ?");
+       Principal.exibirDialogo("Rei Antros: O grande meteoro previsto pelo mago Belchior foi localizado no alto do Monte Cassian, ordeno que o traga para mim de um jeito ou de outro. ");
        Principal.exibirDialogo("Vá depressa, Alvar, ou garanto que vai perder mais do que apenas sua filha!");
 
        //foto do alvar com raiva 
@@ -72,17 +72,17 @@ public class Barbaro extends Personagem {
                 break;
 
             case "arquimago":
-                adicionarOpcao("Eu quero saber mais sobre a Meteoro, Adoniran", txt -> {
-                    Principal.exibirDialogo("Arquimago: Oh meu caro, eu sinto muito,minha curiosidade se encontra no mesmo estado que a sua.");
-                    Principal.exibirDialogo("Arquimago: Não possuo o saber necessário para decifrar essa poderosa entidade, mas posso afirmar que possuí um poder nunca antes visto pelos homens");
-                    Principal.exibirDialogo("*Você se despede do mestre Adoniran e segue rota pela floresta*");
+                adicionarOpcao("\"Eu quero saber mais sobre a Meteoro, Adoniran\"", txt -> {
+                    Principal.exibirDialogo("Mestre Adoniran: Oh meu caro, eu sinto muito. Minha curiosidade se encontra no mesmo estado que a sua.");
+                    Principal.exibirDialogo("Mestre Adoniran: Não possuo o saber necessário para decifrar essa poderosa entidade, mas posso afirmar que possuí um poder nunca antes visto pelos homens!");
+                    Principal.exibirDialogo("*Você se despede do Mestre Adoniran e segue rota pela floresta*");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "floresta"));
                     continuarAventura("floresta", areaTexto, botoes);
                 });
-                adicionarOpcao("Eu quero saber mais sobre o Território onde está o meteoro", txt -> {
-                    Principal.exibirDialogo("Arquimago: Minha sabedoria nunca chegou a essas terras meu caro, mas pelos estudos do mestre Jobim. ");
-                    Principal.exibirDialogo("Sabemos que é um território com vasta magia negra, a noite é uma terrível aliada das forças umbras que circundam o território");
-                    Principal.exibirDialogo("*Você se despede do mestre Adoniran e segue rota pela floresta*");
+                adicionarOpcao("\"Eu quero saber mais sobre o território onde está o meteoro\"", txt -> {
+                    Principal.exibirDialogo("Mestre Adoniran: Minha sabedoria nunca chegou a essas terras meu caro. Mas pelos estudos do Mestre Jobim... ");
+                    Principal.exibirDialogo("Mestre Adoniran: Sabemos que é um território com vasta magia negra. A noite é uma terrível aliada das forças umbras que circundam o território.");
+                    Principal.exibirDialogo("*Você se despede do Mestre Adoniran e segue rota pela floresta*");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "floresta"));
                     continuarAventura("floresta", areaTexto, botoes);
                 });
@@ -93,7 +93,7 @@ public class Barbaro extends Personagem {
             case "floresta": 
             Principal.exibirDialogo("*Você se encontra à frente de uma vasta e densa mata");
                 adicionarOpcao("Seguir pela trilha", txt -> {
-                    Principal.exibirDialogo("*O personagem se depara com um caminho, seu olhar denso persegue cada detalhe, apenas o som do silêncio o faz companhia, até que um barulho surge de um dos arbustos e acaba com a paz presente no ambiente*");
+                    Principal.exibirDialogo("*Você se depara com um caminho, seu olhar denso persegue cada detalhe. Apenas o som do silêncio o faz companhia, até que um barulho surge de um dos arbustos e acaba com a paz presente no ambiente*");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fada"));
                     continuarAventura("fada", areaTexto, botoes);
                 });
@@ -105,7 +105,7 @@ public class Barbaro extends Personagem {
                 break;
             case "fada":
                 adicionarOpcao("Conferir arbusto", txt -> {
-                    Principal.exibirDialogo("Você encontra uma pequena Fada presa entre os espinhos que estavam presentes no arbusto");
+                    Principal.exibirDialogo("*Você encontra uma pequena Fada presa entre os espinhos que estavam presentes no arbusto*");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "libertar"));
                     continuarAventura("libertar", areaTexto, botoes);
                 });
@@ -116,16 +116,16 @@ public class Barbaro extends Personagem {
                 super.iniciarAventura(areaTexto, botoes);
                 break;
             case "libertar": 
-            Principal.exibirDialogo("A pequena fada se encontra debilitada e inconsciente, suas mãos se arranham nos espinhos para conseguir tirar ela dali");
+            Principal.exibirDialogo("A pequena fada se encontra debilitada e inconsciente, suas mãos se arranham nos espinhos para conseguir tirar ela dali.");
                 adicionarOpcao("Escondê-la em algum arbusto que não tenha espinhos", txt -> {
-                    Principal.exibirDialogo("Uma voz misteriosa ressoa: Você fez uma boa ação nobre caçador");
+                    Principal.exibirDialogo("Uma voz misteriosa ressoa: Você fez uma boa ação nobre caçador.");
                      EstadoJogo estado = new EstadoJogo("Bárbaro", "frente");
                     estado.setEscolha("salvouFada", true); // Registrando a decisão no mapa
                     GerenciadorProgresso.salvarProgresso(estado);
                     continuarAventura("frente", areaTexto, botoes);
                 });
                 adicionarOpcao("Deixar-la na grama mais próxima", txt -> {
-                    Principal.exibirDialogo("Uma voz misteriosa ressoa: Você fez uma boa ação nobre caçador");
+                    Principal.exibirDialogo("Uma voz misteriosa ressoa: Você fez uma boa ação nobre caçador.");
                     EstadoJogo estado = new EstadoJogo("Bárbaro", "frente");
                     estado.setEscolha("salvouFada", true); // Registrando a decisão no mapa
                     GerenciadorProgresso.salvarProgresso(estado);
@@ -134,21 +134,24 @@ public class Barbaro extends Personagem {
                 super.iniciarAventura(areaTexto, botoes);
                 break;
             case "frente": 
-            Principal.exibirDialogo("O tempo é precioso, não posso perdê-lo");
+            Principal.exibirDialogo("\"O tempo é precioso, não posso perdê-lo\" Diz Alvar para si");
             Principal.exibirDialogo("*Você se depara com um grande vilarejo abandonado e exilado pelo tempo*");
             Principal.exibirDialogo("O vilarejo parece desabitado, quase nulo de vida");
             Principal.exibirDialogo("*Você escuta uma voz familiar*");
-            Principal.exibirDialogo("Elena: Papai, Eu estou aqui, O senhor finalmente chegou");
+            Principal.exibirDialogo("Elena: Papai, eu estou aqui, o senhor finalmente chegou!");
             Principal.exibirDialogo("Alvar: E-... Elena!?");
             Principal.exibirDialogo("*Você corre até onde o som te guia*");
             Principal.exibirDialogo("*Você encontra sua filha próxima do poço da vila*");
-                adicionarOpcao("Chegar mais perto (morte)", txt -> {
+                adicionarOpcao("Chegar mais perto", txt -> {
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
                     continuarAventura("morte", areaTexto, botoes);
                 });
                 adicionarOpcao("Se questionar se é real", txt -> {
-                    Principal.exibirDialogo("Alvar percebe que Elena não está usando o colar que ele lhe deu de presente");
-                    Principal.exibirDialogo("Alvar: Você não é minha filha.");
+                    Principal.exibirDialogo("Alvar: Elena! Eu senti tanto a sua falta");
+                    Principal.exibirDialogo("Elena: Eu também pai!");
+                    Principal.exibirDialogo("*Se aproximando, Alvar percebe que sua filha não está usando o colar que deu em seu último aniversário");
+                    Principal.exibirDialogo("Alvar: Filha onde está seu colar que eu...");
+                    Principal.exibirDialogo("Alvar: V- você não é minha filha.");
                     EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
                     //para salvar uma escolha precisa dessa estrutura
                     if (estado == null) {
@@ -162,25 +165,27 @@ public class Barbaro extends Personagem {
                 });
                 super.iniciarAventura(areaTexto, botoes);
                 break;
+
             case "combate": 
             for (JButton botao : botoes) {
              botao.setVisible(false);
                  }
-            Principal.exibirDialogo("A criatura se revela");
+            Principal.exibirDialogo("A criatura se revela!");
             esperarDialogoEExecutar(() -> iniciarCombate(areaTexto));
-                break;
+            break;
+
             case "montanha": 
             areaTexto.setText("");
             Principal.exibirDialogo("*Após o combate você decide continuar a sua jornada*");
-            Principal.exibirDialogo("Você chega na subida da montanha");
+            Principal.exibirDialogo("Você chega na subida da montanha.");
             Principal.exibirDialogo("*Você se depara com uma escalada voraz que se sustenta até o topo do monte");
             //talvez uma cinemática aqui
-            Principal.exibirDialogo("*O personagem sobe todo o percurso da montanha");
-            Principal.exibirDialogo("*uma criatura feita de neve e gelo surge e bloqueia o seu caminho*");
+            Principal.exibirDialogo("*Você sobe todo o percurso da montanha*");
+            Principal.exibirDialogo("Uma criatura feita de neve e gelo surge e bloqueia o seu caminho!");
             EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
                 if (estado != null && estado.getEscolha("salvouFada")) {
                     Principal.exibirDialogo("*A fada que você salvou reaparece*");
-                    Principal.exibirDialogo("Fada: Os bons corações merecem justiça!\n\n Que nada seja capaz de o impedir");
+                    Principal.exibirDialogo("Fada Katarina: Os bons corações merecem justiça!\n\n Que nada seja capaz de o impedir.");
                     Principal.exibirDialogo("*A cratura é derretida e evapora diante de seus olhos*");
                     continuarAventura("montaa", areaTexto, botoes);
 
@@ -199,37 +204,37 @@ public class Barbaro extends Personagem {
                 break;
 
             case "montaa": 
-            Principal.exibirDialogo("*Você chega ao topo e encontra pedaços do meteoro e no meio de uma cratera,uma estrela cadente*");
+            Principal.exibirDialogo("*Você chega ao topo e encontra pedaços do meteoro e no meio de uma cratera, uma estrela cadente*");
             Principal.exibirDialogo("*Dela uma poderosa voz ecoa*");
-            Principal.exibirDialogo("Voz:aquele que ousar se aproximar realize seu maior desejo,o preço por isso será equivalente ao que seu coração anseia. ");
-            Principal.exibirDialogo("Tudo que é dado à alguém será tirado de outros");
+            Principal.exibirDialogo("Voz: Aquele que ousar se aproximar, realize seu maior desejo. O preço por isso será equivalente ao que seu coração anseia. ");
+            Principal.exibirDialogo("Voz: Tudo que é dado à alguém será tirado de outros");
                 adicionarOpcao("Fazer um desejo", txt -> {
                     Principal.exibirDialogo("Alvar: Eu quero minha filha de volta!");
                     Principal.exibirDialogo("Voz: Um desejo sincero vindo do coração não será negado à ninguém");
-                    Principal.exibirDialogo("Voz: Vosso coração foi ferido por esse mundo,um pequeno anjo foi morto pela crueldade da floresta");
+                    Principal.exibirDialogo("Voz: Seu coração foi ferido por esse mundo, um pequeno anjo foi morto pela crueldade da floresta.");
                     Principal.exibirDialogo("Voz: Eu enxergo Paternidade no seu coração, eu enxergo uma verdade tão pontual quanto o sol que todos os dias nasce e se põe");
-                    Principal.exibirDialogo("Voz: Você terá sua filha novamente lenhador de Albour,ao custo de algo de mesmo valor");
-                    Principal.exibirDialogo("*sua filha reaparece na sua frente*");
+                    Principal.exibirDialogo("Voz: Você terá sua filha novamente lenhador de Albour! Ao custo de algo de mesmo valor...");
+                    Principal.exibirDialogo("*Sua filha reaparece na sua frente*");
                     Principal.exibirDialogo("Elena: Papai!?");
                     Principal.exibirDialogo("Alvar: Elena!!");
-                    Principal.exibirDialogo("*Você retorna a sua casa,mesmo sabendo das consequências,sua alegria sobrepõe a culpa,sua filha está de volta*");
-                    Principal.exibirDialogo("*Você e elena retornam ao seu lar,uma antiga lápide é partida ao meio com um golpe do machado*");
-                    Principal.exibirDialogo("Aproveite os seu dias,Nobre lenhador, dê valor a cada segundo");
+                    Principal.exibirDialogo("*Você retorna a sua casa, mesmo sabendo das consequências. Sua alegria sobrepõe a culpa, sua filha está de volta*");
+                    Principal.exibirDialogo("*Você e Elena retornam ao seu lar. Uma antiga lápide é partida ao meio com um golpe do machado*");
+                    Principal.exibirDialogo("Aproveite os seu dias, Nobre lenhador, dê valor a cada segundo.");
                     Principal.exibirDialogo("Sua pequenina retornou... \n\n *Fim de jogo");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     continuarAventura("fim", areaTexto, botoes);
                 });
                 adicionarOpcao("Levar para o Rei", txt -> {
-                    Principal.exibirDialogo("*a poderosa estrela é levada em suas mãos,o caminho é torturante,Algo segue tentado seu coração para que use o desejo para seu próprio objetivo.*");
-                    Principal.exibirDialogo("*porém você segue com seus olhos voltados para  o castelo,sua mente está limpa como as planícies.*");
-                    Principal.exibirDialogo("Rei: Você se provou digno,Ilvar.");
-                    Principal.exibirDialogo("Retorne a sua casa,meus Guardas levarão sua recompensa.");
+                    Principal.exibirDialogo("*A poderosa estrela é levada em suas mãos, o caminho é torturante. Algo segue tentado seu coração para que use o desejo para sua própria vontade*");
+                    Principal.exibirDialogo("*Porém você segue com seus olhos voltados para o castelo, sua mente está limpa como as planícies.*");
+                    Principal.exibirDialogo("Rei: Você se provou digno, Alvar...");
+                    Principal.exibirDialogo("Rei: Retorne a sua casa, meus Guardas levarão sua recompensa.");
                     Principal.exibirDialogo("Rei: AGORA SUMA!!");
-                    Principal.exibirDialogo("*Ao sair do castelo,tudo que seu coração pede é um lar,talvez uma pequena cabana já cansada do luto que a envolve*");
+                    Principal.exibirDialogo("*Ao sair do castelo, tudo que seu coração pede é um lar, talvez uma pequena cabana já cansada do luto que a envolve*");
                     Principal.exibirDialogo("*Uma casa velha com uma lápide ao lado é tudo que te restou*");
-                    Principal.exibirDialogo("*Você se ajoelha ao túmulo*");
-                    Principal.exibirDialogo("Alvar: Ninguém deve sofrer a dor que eu sofri no dia que eu te perdi");
-                    Principal.exibirDialogo("Fim de jogo");
+                    Principal.exibirDialogo("Você se ajoelha ao túmulo");
+                    Principal.exibirDialogo("Alvar: Ninguém deve sofrer a dor que eu sofri no dia que eu te perdi.");
+                    Principal.exibirDialogo("*Fim de jogo");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "fim"));
                     continuarAventura("fim", areaTexto, botoes);
                 });
@@ -241,7 +246,7 @@ public class Barbaro extends Personagem {
                 finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "fim"));
                 break;
             case "morte":
-                Principal.exibirDialogo("Você foi moleque... Fim de jogo.");
+                Principal.exibirDialogo("Você foi despedaçado pelo seu inimigo.\n\n *Fim de jogo.");
                 finalizarCiclo(areaTexto, botoes, new EstadoJogo("Bárbaro", "morte"));
                 break;
 
@@ -258,7 +263,7 @@ public class Barbaro extends Personagem {
 
         switch (etapa) {
             case "inicio" -> apresentarInicio(areaTexto);
-            case "floresta", "arquimago", "fada","libertar","frente","combate", "gelo", "montanha", "montaa", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
+            case "floresta", "arquimago", "fada", "libertar","frente","combate", "gelo", "montanha", "montaa", "morte", "fim" -> continuarAventura(etapa, areaTexto, botoes);
             default -> apresentarInicio(areaTexto);
         }
     }

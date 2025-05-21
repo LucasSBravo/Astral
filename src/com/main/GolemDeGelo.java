@@ -7,7 +7,7 @@ public class GolemDeGelo implements Inimigo {
 
     @Override
     public String getNome() {
-        return "golem de gelo";
+        return "Criatura de gelo";
     }
 
     @Override
@@ -20,10 +20,10 @@ public class GolemDeGelo implements Inimigo {
     @Override
     public String gerarDescricaoAtaque(int tipo) {
         return switch (tipo) {
-            case 0 -> "O golem golpeia com um braço de gelo!";
-            case 1 -> "O golem dispara espinhos congelantes!";
-            case 2 -> "Muralha de gelo.";
-            default -> "O golem ataca!";
+            case 0 -> "A Criatura de gelo golpeia com um braço de gelo!";
+            case 1 -> "A Criatura de gelo dispara espinhos congelantes!";
+            case 2 -> "A Criatura de gelo ergue uma muralha de gelo!";
+            default -> "A Criatura de gelo ataca!";
         };
     }
 
