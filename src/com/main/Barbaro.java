@@ -264,40 +264,45 @@ public class Barbaro extends Personagem {
     }
 
     private void iniciarCombate(JTextArea areaTexto) {
-        limparOpcoes();
-    
-        new SistemaCombate(areaTexto, botoes,
-            () -> {
-                EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
-                if (estado == null) {
-                    estado = new EstadoJogo("Bárbaro", "montanha");
-                } else {
-                    estado.setEtapa("montanha"); // ou estado.setProximaEtapa("montanha") se preferir manter o método novo
-                }
-                GerenciadorProgresso.salvarProgresso(estado);
-                continuarAventura("montanha", areaTexto, botoes);
+    limparOpcoes();
 
-            },
-            () -> {
-                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
-                continuarAventura("morte", areaTexto, botoes);
+    Inimigo criaturaSombria = new CriaturaSombria();
+
+    new SistemaCombate(areaTexto, botoes,
+        () -> {
+            EstadoJogo estado = GerenciadorProgresso.carregarProgresso();
+            if (estado == null) {
+                estado = new EstadoJogo("Bárbaro", "montanha");
+            } else {
+                estado.setEtapa("montanha");
             }
-        );
-    }
+            GerenciadorProgresso.salvarProgresso(estado);
+            continuarAventura("montanha", areaTexto, botoes);
+        },
+        () -> {
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
+            continuarAventura("morte", areaTexto, botoes);
+        },
+        criaturaSombria
+    );
+}
     private void iniciarCombate2(JTextArea areaTexto) {
-        limparOpcoes();
-    
-        new SistemaCombate(areaTexto, botoes,
-            () -> {
-                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montaa"));
-                continuarAventura("montaa", areaTexto, botoes);
-            },
-            () -> {
-                GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
-                continuarAventura("morte", areaTexto, botoes);
-            }
-        );
-    }
+    limparOpcoes();
+
+    Inimigo golemDeGelo = new GolemDeGelo();
+
+    new SistemaCombate(areaTexto, botoes,
+        () -> {
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "montaa"));
+            continuarAventura("montaa", areaTexto, botoes);
+        },
+        () -> {
+            GerenciadorProgresso.salvarProgresso(new EstadoJogo("Bárbaro", "morte"));
+            continuarAventura("morte", areaTexto, botoes);
+        },
+        golemDeGelo
+    );
+}
 
     public void esperarDialogoEExecutar(Runnable acao) {
     if (Principal.caixaDialogo != null) {
