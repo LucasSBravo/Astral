@@ -6,7 +6,7 @@ public class Mago extends Personagem {
     private final JButton[] botoes;
 
     public Mago(JButton[] botoes) {
-        super("Aielo", "Biscon");
+        super("Aielo", "Biscon", "Mago");
         this.botoes = botoes;
     }
 
@@ -17,6 +17,7 @@ public class Mago extends Personagem {
 
     private void apresentarInicio(JTextArea areaTexto) {
         limparOpcoes();
+        Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CasteloAstral.jpg");
         Principal.exibirDialogo("Nas terras distantes de Feromah, uma antiga lenda sobre um poderoso meteoro místico rondava o cotidiano.");
         Principal.exibirDialogo("Até que em um momento...");
         Principal.exibirDialogo("Este poderoso meteoro foi avistado pelos reis de cada reino.");
@@ -53,6 +54,7 @@ public class Mago extends Personagem {
                 break;
 
             case "arquimago":  
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/BibliotecaAstral.jpg");
                 Principal.exibirDialogo("Arquimago: O que o rei te disse, Aielo?");
                 Principal.exibirDialogo("Aielo: Mestre Adoniran, ele me informou sobre um misterioso artefato que caiu no alto do Monte Cassian...");
                 adicionarOpcao("Algum feiticeiro conseguiu interceptá-lo?", txt -> {
@@ -73,6 +75,7 @@ public class Mago extends Personagem {
                 break;    
 
             case "floresta": 
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/FlorestaAstral.jpg");
                 Principal.exibirDialogo("Você se encontra à frente de uma vasta e densa mata:");
                 adicionarOpcao("Seguir pela trilha", txt -> {
                     Principal.exibirDialogo("Você se depara com um caminho, seu olhar denso persegue cada detalhe do ambiente. ");
@@ -90,6 +93,7 @@ public class Mago extends Personagem {
                 break;
 
             case "fada":
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/FlorestaAstral.jpg");
                 adicionarOpcao("Conferir o arbusto", txt ->{
                     Principal.exibirDialogo("*Você encontra uma pequena fada presa entre os espinhos que estavam presentes no arbusto*");
                     GerenciadorProgresso.salvarProgresso(new EstadoJogo("Mago", "libertar"));
@@ -103,6 +107,7 @@ public class Mago extends Personagem {
                 break;
 
             case "libertar": 
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/FlorestaAstral.jpg");
             Principal.exibirDialogo("A pequena fada se encontra debilitada e inconsciente. Suas mãos se arranham nos espinhos para conseguir tirar ela dali.");
                 adicionarOpcao("Escondê-la em algum arbusto que não tenha espinhos", txt -> {
                     Principal.exibirDialogo("Uma voz misteriosa ressoa: Você fez uma boa ação pequeno feiticeiro.");
@@ -123,6 +128,7 @@ public class Mago extends Personagem {
 
             case "frente": 
             Principal.exibirDialogo("\"O tempo é precioso, não posso perdê-lo\" Diz Aielo para si.");
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CombateAstral.jpg");
             Principal.exibirDialogo("*Você segue seu caminho avante rumo ao próximo ponto*");
             Principal.exibirDialogo("*Você se depara com um grande vilarejo abandonado e exilado pelo tempo*");
             Principal.exibirDialogo("O vilarejo parece desabitado, quase nulo de vida");
@@ -156,6 +162,7 @@ public class Mago extends Personagem {
                 break;
             
             case "combate": 
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CombateAstral.jpg");
             for (JButton botao : botoes) {
              botao.setVisible(false);
                  }
@@ -166,6 +173,7 @@ public class Mago extends Personagem {
             
             case "montanha": 
             areaTexto.setText("");
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/GeloAstral.jpg");
             Principal.exibirDialogo("*Após o combate você decide continuar a sua jornada*");
             Principal.exibirDialogo("*Você chega na subida da montanha*");
             Principal.exibirDialogo("*Você se depara com uma escalada voraz que se sustenta até o topo do monte*");
@@ -188,6 +196,7 @@ public class Mago extends Personagem {
                 break;
             case "gelo": //*o personagem se encontra à frente de uma vasta e densa mata:
             // Oculta os botões antes de exibir a mensagem de combate
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/GeloAstral.jpg");
             for (JButton botao : botoes) {
                 botao.setVisible(false);
                  }
@@ -195,6 +204,7 @@ public class Mago extends Personagem {
                 break;
 
             case "montaa": 
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/GeloAstral.jpg");
             Principal.exibirDialogo("Você chega ao topo e encontra pedaços do meteoro e no meio de uma cratera, uma estrela cadente, Tão brilhante quanto o sol");
             Principal.exibirDialogo("*Dela uma poderosa voz ecoa*");
             Principal.exibirDialogo("Voz: Aquele que ousar se aproximar, realize seu maior desejo. O preço por isso será equivalente ao que seu coração anseia. ");

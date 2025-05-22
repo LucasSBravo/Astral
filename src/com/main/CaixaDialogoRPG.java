@@ -32,7 +32,7 @@ public void executarAoTerminarFila(Runnable acao) {
         setLayout(new BorderLayout());
 
         // Carrega imagens e fonte
-        fundoPergaminho = new ImageIcon(getClass().getResource("/com/main/Resources/Imagens/pergaminho.jpg")).getImage();
+        fundoPergaminho = new ImageIcon(getClass().getResource("/com/main/Resources/Imagens/Elementos/pergaminho.jpg")).getImage();
         // manchaTinta = new ImageIcon(getClass().getResource("/images/mancha.png")).getImage();
         carregarFonteMedieval();
 

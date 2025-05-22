@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class SistemaCombate {
     private int vidaJogador = 100;
-    private int vidaInimigo = 110; // originalmente 110
+    private int vidaInimigo = 1; // originalmente 110
     private int estaminaJogador = 6;
     private final int ESTAMINA_MAX = 10;
 

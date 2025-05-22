@@ -6,20 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+
 public abstract class Personagem {
     protected String nome;
     protected String origem;
+    protected String classe;
     protected List<Opcao> opcoes;
+    
 
-    public Personagem(String nome, String origem) {
+    public Personagem(String nome, String origem, String classe) {
         this.nome = nome;
         this.origem = origem;
+        this.classe = classe;
         this.opcoes = new ArrayList<>();
     }
 
     public void apresentarHistoria(JTextArea areaTexto) {
         areaTexto.setText("");
-        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem );
+        Principal.exibirDialogo("Você escolheu: " + nome + "\nOrigem: " + origem + "\nClasse:" + classe);
     }
 
     public void iniciarAventura(JTextArea areaTexto, JButton[] botoes) {
@@ -43,7 +47,7 @@ public abstract class Personagem {
         }
 
         if (botoes.length > numOpcoes) {
-            botoes[botoes.length - 1].setText("Opções");
+            botoes[botoes.length - 1].setText("Menu");
             botoes[botoes.length - 1].setEnabled(true);
             botoes[botoes.length - 1].addActionListener(e -> {
                 if (Principal.caixaDialogo != null) {
