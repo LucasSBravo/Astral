@@ -21,12 +21,18 @@ public class CaixaDialogoRPG extends JPanel {
     private Font fonteMedieval;
 
     private final JPanel focoDummy = new JPanel();
+    private Runnable aoTerminarFila = null;
+
+public void executarAoTerminarFila(Runnable acao) {
+    this.aoTerminarFila = acao;
+}
+
 
     public CaixaDialogoRPG() {
         setLayout(new BorderLayout());
 
         // Carrega imagens e fonte
-        fundoPergaminho = new ImageIcon(getClass().getResource("/com/main/Resources/Imagens/pergaminho.jpg")).getImage();
+        fundoPergaminho = new ImageIcon(getClass().getResource("/com/main/Resources/Imagens/Elementos/pergaminho.jpg")).getImage();
         // manchaTinta = new ImageIcon(getClass().getResource("/images/mancha.png")).getImage();
         carregarFonteMedieval();
 
@@ -163,8 +169,18 @@ public class CaixaDialogoRPG extends JPanel {
             setVisible(true);
         } else {
             exibindoMensagem = false;
+            if (aoTerminarFila != null) {
+    aoTerminarFila.run();
+    aoTerminarFila = null; // evita chamadas duplicadas
+}
+
         }
     }
+
+    public boolean estaExibindoMensagem() {
+    return exibindoMensagem;
+}
+
 
     public void limpar() {
         filaMensagens.clear();

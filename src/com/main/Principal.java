@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 public class Principal {
     private static JScrollPane scroll;
     private static JPanel painelBotoes;
+    private static FundoPanel painelFundoGlobal;
+
     public static CaixaDialogoRPG caixaDialogo;
     private static boolean telaCheia = true;
     private static JFrame janela;
@@ -27,7 +29,7 @@ public class Principal {
         janela.setUndecorated(true);
 
         // Define o ícone personalizado
-        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/Elementos/AstralIcon.png").getImage();
         janela.setIconImage(icone);
 
         configurarModoExecucao(janela);
@@ -42,10 +44,12 @@ public class Principal {
         exibirLobby(estadoSalvo);
     }
 
-    public static JButton botaoOpcoesCombate = new JButton("Opções");
+    // -O botão "Menu" que aparece durante o combate reaparece caso o combate não tenha sido encerrado corretamente ( normalmente ocorre durante o combate ao clicar -> Menu -> Voltar -> Jogar -> Novo Jogo)
+    public static JButton botaoOpcoesCombate = new JButton("<html>  Menu</html>");
 
     public static void exibirLobby(EstadoJogo estadoSalvo) {
         areaTexto.setText(" ");
+        Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CasteloAstral.jpg");
         // Limpa a caixa de diálogo antes de configurar o lobby
     if (caixaDialogo != null) {
         caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
@@ -63,6 +67,7 @@ public class Principal {
         botoes[0].addActionListener(e -> {
             if (estadoSalvo != null) {
                 areaTexto.setText("Progresso encontrado. Deseja continuar?");
+                Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CasteloAstral.jpg");
         
                 limparActionListeners(botoes);
                 botoes[0].setText("Sim");
@@ -94,6 +99,7 @@ public class Principal {
 
         botoes[1].addActionListener(e -> {
             areaTexto.setText("Opções:");
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CapaAstral.jpg");
         
             limparActionListeners(botoes);
         
@@ -161,7 +167,7 @@ public class Principal {
     }
 
     private static FundoPanel criarPainelFundo(JTextArea areaTexto, JButton[] botoes) {
-        Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/darkaether.png").getImage();//darkaether.png
+        Image imagemFundo = new ImageIcon("src/com/main/Resources/Imagens/Cenario/CasteloAstral.jpg").getImage();//darkaether.png
         
         FundoPanel painelFundo = new FundoPanel(imagemFundo) {
             @Override
@@ -187,18 +193,43 @@ public class Principal {
                 painelBotoes.setBounds((largura - larguraBotoes) / 2, altura - 100, larguraBotoes, alturaBotoes);
                 tituloAstral.setBounds(0, 40, getWidth(), 60); // Centraliza no topo
 
+                if (botoes[0].getText().contains("") && botoes[1].getText().contains("") && botoes[2].getText().contains("Menu.")) {
+                // Cálculo dinâmico dos botões
+                int alturaMaxBotao = 0;
+                int larguraTotal = 0;
+                for (Component c : painelBotoes.getComponents()) {
+                    Dimension d = c.getPreferredSize();
+                    larguraTotal += d.width + 10; // 10 = espaçamento entre botões
+                    alturaMaxBotao = Math.max(alturaMaxBotao, d.height);
+                }
+
+                painelBotoes.setBounds(
+                    (largura - larguraTotal) / 2,
+                    altura - alturaMaxBotao - 40,
+                    larguraTotal,
+                    alturaMaxBotao + 10
+                );
+            }
+
+
+                // Posicionar botão de combate abaixo dos botoes principais
+                int espacamento = 10; // espaço entre os botões principais e o botão de combate
+                int botaoCombateLargura = 150;
+                int botaoCombateAltura = 45;
+                int xBotaoCombate = (largura - botaoCombateLargura) / 2;
+                int yBotaoCombate = altura - 100 + alturaBotoes + espacamento;
+                botaoOpcoesCombate.setBounds(xBotaoCombate, yBotaoCombate, botaoCombateLargura, botaoCombateAltura);
             }
         };
     
         painelFundo.setLayout(null); // Layout absoluto com ajuste manual
 
         // Título personalizado "Astral"
-        tituloAstral = new JLabel("Astral");
-        tituloAstral.setFont(new Font("Serif", Font.BOLD, 48)); // Altere a fonte e o tamanho aqui
-        tituloAstral.setForeground(Color.WHITE); // Altere a cor se quiser
+        tituloAstral = new ShadowLabel("Astral");
         tituloAstral.setHorizontalAlignment(SwingConstants.CENTER);
-        tituloAstral.setBounds(0, 40, painelFundo.getWidth(), 60); // Será ajustado pelo doLayout depois
+        tituloAstral.setBounds(0, 40, painelFundo.getWidth(), 60);
         painelFundo.add(tituloAstral);
+
 
     
         // Área de texto com scroll transparente
@@ -241,18 +272,13 @@ public class Principal {
         painelFundo.add(painelBotoes);
 
         // Configuração do botão "Opções" no combate
-        if (telaCheia == false) {
-            botaoOpcoesCombate.setBounds(900, 1045, 120, 30);
-        }
-        else{
-            botaoOpcoesCombate.setBounds(580, 680, 120, 30); // Posição no canto superior esquerdo
-        }
         botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
         botaoOpcoesCombate.addActionListener(e -> {
             if (caixaDialogo != null) {
                 caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
             }
             areaTexto.setText("Opções:");
+            Principal.mudarImagemDeFundo("src/com/main/Resources/Imagens/Cenario/CapaAstral.jpg");
             limparActionListeners(botoes);
             botaoOpcoesCombate.setVisible(false); // Só aparece durante o combate
 
@@ -301,20 +327,22 @@ public class Principal {
         painelFocoDummy.setBounds(0, 0, 1, 1); // invisível
         painelFundo.add(painelFocoDummy);
     
+        painelFundoGlobal = painelFundo;
+
         return painelFundo;
-    }      
+    }     
 
     public static void exibirMenuInicial(JTextArea areaTexto, JButton[] botoes, EstadoJogo progressoSalvo) {
         if (caixaDialogo != null) {
             caixaDialogo.limpar(); // Método para limpar as mensagens da caixa de diálogo
         }
 
-        String[] opcoes = {"Mago", "Bárbaro", "Opções"};
+        String[] opcoes = {"", "", "Menu."};
 
         areaTexto.setText("Escolha seu personagem:\n");
 
-        ImageIcon iconeMago = new ImageIcon("src/com/main/Resources/Imagens/mago.png");
-        ImageIcon iconeBarbaro = new ImageIcon("src/com/main/Resources/Imagens/cav.png");
+        ImageIcon iconeMago = new ImageIcon("src/com/main/Resources/Imagens/Personagens/Aielo.jpg");
+        ImageIcon iconeBarbaro = new ImageIcon("src/com/main/Resources/Imagens/Personagens/Alvar.jpg");
         iconeMago = new ImageIcon(iconeMago.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
         iconeBarbaro = new ImageIcon(iconeBarbaro.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
 
@@ -370,7 +398,7 @@ public class Principal {
         janela.setUndecorated(true);
     
         // Define ícone novamente
-        Image icone = new ImageIcon("src/com/main/Resources/Imagens/ghostenvergonhadinho.png").getImage();
+        Image icone = new ImageIcon("src/com/main/Resources/Imagens/Elementos/AstralIcon.png").getImage();
         janela.setIconImage(icone);
     
         configurarModoExecucao(janela);
@@ -391,13 +419,25 @@ public class Principal {
     public static void removerFoco() {
         painelFocoDummy.requestFocusInWindow();
     } 
-    
+
+    public static void mudarImagemDeFundo(String caminhoImagem) {
+    if (painelFundoGlobal != null) {
+        Image novaImagem = new ImageIcon(caminhoImagem).getImage();
+        painelFundoGlobal.setImagem(novaImagem);
+        painelFundoGlobal.repaint(); // força a repintura com a nova imagem
+    }
+}
+
     public static class FundoPanel extends JPanel {
         private Image imagem;
 
         public FundoPanel(Image imagem) {
             this.imagem = imagem;
         }
+
+        public void setImagem(Image novaImagem) {
+        this.imagem = novaImagem;
+    }
 
         @Override
         protected void paintComponent(Graphics g) {
